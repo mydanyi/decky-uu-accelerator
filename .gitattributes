@@ -1,0 +1,28 @@
+# Normalize text in the repo to LF so Linux sources are consistent on checkout.
+* text=auto eol=lf
+
+*.py text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.js text eol=lf
+*.mjs text eol=lf
+*.json text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.css text eol=lf
+*.html text eol=lf
+
+# Shell scripts stay LF
+*.sh text eol=lf
+
+# Binary content: never normalize
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.zip binary
+*.tar.gz binary
+*.elf binary
+*.so binary

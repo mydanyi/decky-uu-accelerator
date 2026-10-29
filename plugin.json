@@ -1,0 +1,10 @@
+{
+  "name": "UU加速器",
+  "author": "mydanyi",
+  "flags": ["root"],
+  "api_version": 1,
+  "publish": {
+    "tags": ["utility", "network"],
+    "description": "UU加速器：第三方 Decky 管理插件，负责下载并校验官方 UU 加速器安装包、管理本机加速服务，非官方，预览版。"
+  }
+}

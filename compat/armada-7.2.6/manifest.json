@@ -1,0 +1,43 @@
+{
+  "kernel_release": "7.2.6",
+  "kernel_version": "#1 SMP PREEMPT Sun Oct 11 14:17:59 UTC 2026",
+  "machine": "aarch64",
+  "config_sha256": "8c234a4a850d6fb85923c75a962d53f76e6498e4b88a9197011d6e55f7a78599",
+  "module_sha256": "94480a8b3592f61542898600ac35da1d442ea41516adc3db3b61a09274ec30ed",
+  "source_sha256": "269d497c6e81f0d8ffd74b1b0608b026bc57693636c8b7d930737081111bc543",
+  "source_url": "https://cdn.kernel.org/pub/linux/kernel/v7.x/linux-7.2.6.tar.xz",
+  "license": "GPL-2.0-only",
+  "compiler": "aarch64-linux-gnu-gcc 13.3.0 (Ubuntu 24.04)",
+  "nat_module_sha256": "4b9f5299f3e4fa0a6447705be11e025ee46a5e32f92dc0d0e68af337852a9b2d",
+  "nat_source_sha256": "4f21fcef0fe40de78fa054ecc5426fe3fe3c4b15ef0b2897cf5dcf32f7248c09",
+  "compatible_kernels": [
+    {
+      "kernel_release": "7.2.6",
+      "kernel_version": "#1 SMP PREEMPT Fri Oct 16 22:33:25 UTC 2026",
+      "machine": "aarch64",
+      "config_sha256": "1aa8180c7fe63aa8d32085fdc1673d3493566384e164502fa437b2be3a6c094b",
+      "validated_on": "Armada 20261017.danyi.5.a8a6547e external device report"
+    },
+    {
+      "kernel_release": "7.2.6",
+      "kernel_version": "#1 SMP PREEMPT Mon Oct 26 11:51:41 UTC 2026",
+      "machine": "aarch64",
+      "config_sha256": "5658d86bc18f067a2f8f0f65c0d5c1694fda9469b63e81d4533f794e70920ee0",
+      "module_dir": "oct26",
+      "module_sha256": "a057f6df491b3fb104b4052ca910ac9667e83bf987a0b1159e9ee3be943bb9ab",
+      "nat_module_sha256": "7fc47e5ae0c687beec33cdaf436c2bf02ead58bcee755fab3de2521e67a0fa25",
+      "compiler": "aarch64-linux-gnu-gcc 16.2.1 20260819 (Red Hat Cross 16.2.1-1)",
+      "patches_ref": "https://github.com/armada-os/armada/tree/eebdf06f610c132076eccaec307a68a5bf7da16c/packages/kernel"
+    },
+    {
+      "kernel_release": "7.2.6",
+      "kernel_version": "#12 SMP PREEMPT Thu Oct 29 04:36:08 UTC 2026",
+      "machine": "aarch64",
+      "config_sha256": "53b5cbcd380b509d89b6849bd082471ede92a7b563b229cca2e54283f0094ad9",
+      "module_dir": "oct29",
+      "module_sha256": "4423bc0293ecbde03f9482d5da4fe177635992d7d3e2a8a300a4b44917f887d1",
+      "nat_module_sha256": "4f9ff77b3ff17afafe7336f136c019dbf644a7808ccd9ef7dc15dbe989e04cfc",
+      "compiler": "aarch64-linux-gnu-gcc 13.3.0 (Ubuntu 24.04) / ld 2.42"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Node / frontend build
+node_modules/
+dist/
+output/
+.cache/
+.rollup.cache/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# Runtime data: official UU payloads / downloads / caches (never committed)
+downloads/
+payload/
+payloads/
+identity/
+logs/
+*.tar.gz
+*.elf
+
+# Local packaged artifacts
+*.zip
