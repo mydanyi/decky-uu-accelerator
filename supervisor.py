@@ -21,6 +21,7 @@ import socket
 import subprocess
 import sys
 import time
+import uuid
 from pathlib import Path
 
 # How long the direct core must stay alive before we tell systemd it is ready.
@@ -141,6 +142,66 @@ def _rc(result):
     return getattr(result, "returncode", 1)
 
 
+# One real iptables rule per feature, run in a throwaway unhooked chain.
+_IPTABLES_PROBES = {
+    "xt_cgroup": (
+        "mangle",
+        ["-m", "cgroup", "--path", "/", "-j", "MARK", "--set-mark", "0"],
+    ),
+    "xt_nat": (
+        "nat",
+        ["-p", "udp", "--dport", "53", "-j", "DNAT", "--to-destination", "127.0.0.1:9"],
+    ),
+}
+
+
+def _probe_network_feature(module_name, runner=None):
+    """Probe actual native iptables support for a feature module.
+
+    A uniquely named, unhooked chain is created, the feature rule is appended
+    to that chain only, and the chain is always flushed and deleted again.
+    No built-in chain (OUTPUT/PREROUTING/INPUT/...) is ever touched, no policy
+    or global flush happens, and the probe only reports success when the rule
+    was accepted *and* the owned chain was cleaned up. Any failure (including
+    unsupported backends, timeouts and cleanup errors) returns ``False`` so
+    the existing modprobe/fallback path continues; there are no retries.
+    """
+    spec = _IPTABLES_PROBES.get(module_name)
+    if spec is None:
+        return False
+    table, rule = spec
+    runner = subprocess.run if runner is None else runner
+    ipt = _system_tool("iptables")
+    chain = "UUProbe" + uuid.uuid4().hex[:16]  # 23 chars, collision-safe
+    available = False
+    created = False
+    cleanup_ok = True
+    try:
+        result = _invoke(runner, [ipt, "-t", table, "-N", chain], "iptables -N")
+        if _rc(result) == 0:
+            created = True
+            result = _invoke(runner, [ipt, "-t", table, "-A", chain] + rule, "iptables -A")
+            if _rc(result) == 0:
+                available = True
+    except RuntimeError:
+        available = False
+    finally:
+        if created:
+            try:
+                flush = _invoke(runner, [ipt, "-t", table, "-F", chain], "iptables -F")
+                if _rc(flush) != 0:
+                    cleanup_ok = False
+            except RuntimeError:
+                cleanup_ok = False
+            try:
+                delete = _invoke(runner, [ipt, "-t", table, "-X", chain], "iptables -X")
+                if _rc(delete) != 0:
+                    cleanup_ok = False
+            except RuntimeError:
+                cleanup_ok = False
+    return available and cleanup_ok
+
+
 def _sha256_file(path):
     digest = hashlib.sha256()
     with open(path, "rb") as handle:
@@ -170,18 +231,25 @@ def _normalized_config_sha256(config_gz):
     return hashlib.sha256(normalized).hexdigest()
 
 
-_KERNEL_IDENTITY_FIELDS = ("kernel_release", "kernel_version", "machine", "config_sha256")
+_KERNEL_IDENTITY_FIELDS = ("kernel_release", "machine", "config_sha256")
+# Module-ABI fields compared when selecting a bundled module candidate.
+# ``kernel_version`` (the build-date string) is provenance metadata only:
+# two builds of the same release/arch/config differ in it without any ABI
+# change, so it must never gate the fallback match.
+_MATCH_FIELDS = ("kernel_release", "machine", "config_sha256")
 
 
 def _compat_entries(manifest):
     """Return every accepted kernel identity, baseline included.
 
-    The shipped top-level ``kernel_release``/``kernel_version``/``machine``/
-    ``config_sha256`` stay one supported entry, so an already working install
-    keeps loading exactly as before. ``compatible_kernels`` may only *add*
-    entries, and each of them must be a complete four-field object: a malformed
-    list is a hard error rather than a silently widened allow-list, because
-    every accepted entry permits loading our bundled module bytes.
+    The shipped top-level ``kernel_release``/``machine``/``config_sha256``
+    (plus the optional, purely provenance ``kernel_version``) stay one
+    supported entry, so an already working install keeps loading exactly as
+    before. ``compatible_kernels`` may only *add* entries, and each of them
+    must carry the three ABI identity fields (``kernel_version`` is optional
+    provenance): a malformed list is a hard error rather than a silently
+    widened allow-list, because every accepted entry permits loading our
+    bundled module bytes.
 
     A profile may additionally carry ``module_dir`` to point at its own
     independent module directory; when present, both ``module_sha256`` and
@@ -245,9 +313,9 @@ def _compat_entries(manifest):
 def _validate_kernel_compat(compat, root, module_name="xt_cgroup", digest_key="module_sha256"):
     """Prove the bundled module belongs to this running kernel, or raise.
 
-    The runtime identity is the four-field tuple (release, version, machine,
-    normalized kernel-config digest); it must equal *one* accepted entry -- the
-    legacy top-level baseline or an exact ``compatible_kernels`` profile. The
+    The runtime identity is the three-field ABI tuple (release, machine,
+    normalized kernel-config digest); it must equal *one* accepted entry --
+    the legacy top-level baseline or an exact ``compatible_kernels`` profile. The
     matched entry decides where the module comes from: the baseline and
     profiles without ``module_dir`` use the top-level ``module_name.ko`` and
     the top-level ``digest_key``; a profile with ``module_dir`` uses that
@@ -286,17 +354,29 @@ def _validate_kernel_compat(compat, root, module_name="xt_cgroup", digest_key="m
     }
     matched = None
     for entry in entries:
-        if all(entry[key] == actual[key] for key in _KERNEL_IDENTITY_FIELDS):
+        if all(entry[key] == actual[key] for key in _MATCH_FIELDS):
             matched = entry
             break
     if matched is None:
+        if module_name == "xt_nat":
+            capability = "DNS DNAT (nat) 规则能力"
+            hint = "xt_nat"
+        else:
+            capability = "cgroup 网络规则能力"
+            hint = "xt_cgroup"
         raise RuntimeError(
             (
-                "当前内核不在兼容列表: release={}，version={}，架构={}，配置={}；"
-                "该内核既未随插件构建，也未验证过本插件所带模块，"
-                "请更新加速器插件或安装适配当前内核的系统模块"
+                "缺少{}: release={}，架构={}，配置={}；"
+                "iptables 原生规则不支持且系统未加载 {} 模块，"
+                "请安装适配当前内核 {} 的系统 {} 模块或更新加速器插件"
             ).format(
-                uname.release, uname.version, uname.machine, actual["config_sha256"]
+                capability,
+                uname.release,
+                uname.machine,
+                actual["config_sha256"],
+                hint,
+                uname.release,
+                hint,
             )
         )
 
@@ -338,6 +418,16 @@ def _ensure_module(config, root, module_name, digest_key, dependency_args, runne
 
     runner = subprocess.run if runner is None else runner
 
+    # Native iptables may already implement the feature (built-in or nft
+    # backend) even when the module is not loadable and no bundled candidate
+    # matches this kernel; that capability is enough on its own and must
+    # return before any modprobe, manifest, config or uname access.
+    try:
+        if _probe_network_feature(module_name, runner=runner):
+            return
+    except RuntimeError:
+        pass
+
     probe = _invoke(
         runner, [_system_tool("modprobe"), module_name], "modprobe {}".format(module_name)
     )
@@ -345,9 +435,15 @@ def _ensure_module(config, root, module_name, digest_key, dependency_args, runne
         return
 
     compat = config.get("kernel_compat")
-    module_path = _validate_kernel_compat(
-        compat, root, module_name=module_name, digest_key=digest_key
-    )
+    try:
+        module_path = _validate_kernel_compat(
+            compat, root, module_name=module_name, digest_key=digest_key
+        )
+    except RuntimeError as exc:
+        capability = "cgroup" if module_name == "xt_cgroup" else "DNS DNAT"
+        raise RuntimeError(
+            "{}能力 (系统模块 {}) 加载失败: {}".format(capability, module_name, exc)
+        )
 
     dependency = _invoke(
         runner,

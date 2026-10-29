@@ -113,6 +113,13 @@ class KernelCompatTestCase(unittest.TestCase):
         self.tmp = Path(tempfile.mkdtemp())
         self.addCleanup(shutil.rmtree, str(self.tmp), ignore_errors=True)
         self.supervisor = load_supervisor()
+        # Isolate the legacy module-loader tests from the real iptables rule
+        # probe introduced with network capability detection.
+        probe_patch = mock.patch.object(
+            self.supervisor, "_probe_network_feature", create=True, return_value=False
+        )
+        probe_patch.start()
+        self.addCleanup(probe_patch.stop)
 
     # -- helpers ---------------------------------------------------------
     def ensure(self, config, root, runner):
@@ -301,7 +308,9 @@ class KernelCompatTestCase(unittest.TestCase):
             self.assertIsInstance(argv, list)
 
     def test_identity_mismatch_rejected_before_insmod(self):
-        for field, wrong in (("release", "0.0.0"), ("version", "#2 WRONG"), ("machine", "x86_64")):
+        # kernel_version (build date) is no longer an ABI gate; only a
+        # release or architecture mismatch may still reject the candidate.
+        for field, wrong in (("release", "0.0.0"), ("machine", "x86_64")):
             with self.subTest(field=field):
                 root, compat = self.build_env()
                 config = self.fex_config(compat)
@@ -430,7 +439,7 @@ class KernelCompatTestCase(unittest.TestCase):
         self.assertEqual(len(runner.calls), 1)  # only the initial modprobe
 
     def test_nat_kernel_mismatch_prevents_load(self):
-        for field, wrong in (("release", "0.0.0"), ("version", "#2 WRONG"), ("machine", "x86_64")):
+        for field, wrong in (("release", "0.0.0"), ("machine", "x86_64")):
             with self.subTest(field=field):
                 root, compat = self.build_env()
                 config = self.fex_config(compat)
@@ -494,9 +503,6 @@ class KernelCompatTestCase(unittest.TestCase):
         unlisted kernel can never reach a module load attempt.
         """
         cases = (
-            # a build the report never verified, matching nothing
-            ("unlisted-version", None,
-             {"version": "#1 SMP PREEMPT Mon Oct 19 08:00:00 UTC 2026"}),
             # the verified profile's config differs from this host's
             ("unknown-config", {"config_sha256": "0" * 64}, {}),
             # a cross-arch profile entry can never be selected on this host
@@ -517,6 +523,55 @@ class KernelCompatTestCase(unittest.TestCase):
                         self.ensure(self.fex_config(compat), root, runner)
 
                 self.assertEqual(len(runner.calls), 1)  # rejected before insmod
+
+    def test_differing_build_date_alone_is_accepted_for_both_modules(self):
+        """A different kernel_version (build date) alone never rejects.
+
+        Both the top-level baseline and the ``compatible_kernels`` profile are
+        matched on release/architecture/config only, for xt_cgroup and xt_nat.
+        """
+        other_version = "#1 SMP PREEMPT Mon Oct 19 08:00:00 UTC 2026"
+        for name, ensure in (("xt_cgroup", self.ensure), ("xt_nat", self.ensure_nat)):
+            with self.subTest(module=name):
+                # parent (baseline) candidate, host version differs from manifest
+                root, compat = self.build_env()
+                runner = FakeRunner([completed(1), completed(0), completed(0)])
+                with self.uname_patch(version=other_version):
+                    ensure(self.fex_config(compat), root, runner)
+                self.assertEqual(len(runner.calls), 3)
+                self.assertEqual(
+                    runner.calls[2][0][1], str(compat / (name + ".ko")))
+
+                # child (compatible_kernels profile) candidate, same idea
+                root, compat = self.build_verified_env()
+                runner = FakeRunner([completed(1), completed(0), completed(0)])
+                with self.uname_patch(version="#9 SMP totally other build"):
+                    ensure(self.fex_config(compat), root, runner)
+                self.assertEqual(len(runner.calls), 3)
+                self.assertEqual(
+                    runner.calls[2][0][1], str(compat / (name + ".ko")))
+
+    def test_child_profile_without_kernel_version_matches_for_both_modules(self):
+        """A matching profile may omit ``kernel_version`` entirely.
+
+        ``kernel_version`` is optional provenance, never a required ABI field:
+        both xt modules must still select the child ``module_dir`` bytes.
+        """
+        for name, ensure in (("xt_cgroup", self.ensure), ("xt_nat", self.ensure_nat)):
+            with self.subTest(module=name):
+                root, compat, _entry = self.build_oct26_env()
+                (compat / (name + ".ko")).unlink()
+                manifest = self.read_manifest(compat)
+                manifest["compatible_kernels"][0].pop("kernel_version", None)
+                self.write_manifest(compat, manifest)
+                runner = FakeRunner([completed(1), completed(0), completed(0)])
+
+                with self.uname_patch(version=KVERSION_OCT26):
+                    ensure(self.fex_config(compat), root, runner)
+
+                self.assertEqual(len(runner.calls), 3)
+                self.assertEqual(
+                    runner.calls[2][0][1], str(compat / "oct26" / (name + ".ko")))
 
     def test_compatible_profile_cannot_bypass_module_digest(self):
         """A matching profile never excuses a tampered bundled module.
@@ -665,22 +720,29 @@ class KernelCompatTestCase(unittest.TestCase):
 
                 self.assertEqual(len(runner.calls), 1)
 
-    def test_oct26_unknown_four_field_variant_rejects_without_parent_fallback(self):
-        """Only the exact four-field identity plus ``module_dir`` is accepted.
+    def test_oct26_child_with_differing_build_date_loads_child_bytes(self):
+        """A profile whose build date differs from the host still matches.
 
-        A sibling entry that differs in one identity field (here the build
-        version) must not match at all, so the parent binaries are never used
-        even though the baseline digests are valid.
+        ``kernel_version`` is provenance metadata, not an ABI gate: the child
+        ``module_dir`` entry is selected by release/architecture/config and
+        its own digests still prove the loaded bytes.
         """
-        root, compat, _ = self.build_oct26_env(
+        root, compat, entry = self.build_oct26_env(
             profile_overrides={"kernel_version": "#1 SMP PREEMPT Tue Oct 27 11:51:41 UTC 2026"})
+        (compat / "xt_cgroup.ko").unlink()
         runner = FakeRunner([completed(1), completed(0), completed(0)])
 
         with self.uname_patch(version=KVERSION_OCT26):
-            with self.assertRaises(RuntimeError):
-                self.ensure(self.fex_config(compat), root, runner)
+            self.ensure(self.fex_config(compat), root, runner)
 
-        self.assertEqual(len(runner.calls), 1)
+        self.assertEqual(len(runner.calls), 3)
+        self.assertEqual(os.path.basename(runner.calls[2][0][0]), "insmod")
+        self.assertEqual(
+            runner.calls[2][0][1], str(compat / "oct26" / "xt_cgroup.ko"))
+        self.assertEqual(
+            sha256((compat / "oct26" / "xt_cgroup.ko").read_bytes()),
+            entry["module_sha256"],
+        )
 
 
 if __name__ == "__main__":

@@ -1,6 +1,6 @@
 {
   "name": "uu-accelerator",
-  "version": "0.1.0-preview.7",
+  "version": "0.1.0-preview.8",
   "private": true,
   "description": "ArmadaOS 上的 UU 加速器（网易 UU）第三方 Decky 安装管理器：下载并校验官方安装包，管理本机加速服务。",
   "type": "module",

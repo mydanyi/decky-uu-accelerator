@@ -51,7 +51,7 @@ EXPECTED_PLUGIN_NAME = "UU加速器"
 
 # package.json identity.
 EXPECTED_PACKAGE_NAME = "uu-accelerator"
-EXPECTED_VERSION = "0.1.0-preview.7"
+EXPECTED_VERSION = "0.1.0-preview.8"
 
 # plugin.json identity.
 EXPECTED_API_VERSION = 1
