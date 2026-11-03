@@ -330,10 +330,13 @@ class Manager:
         except Exception:
             platform = {}
         manifest = self._read_manifest()
+        running = self._is_active()
+        core_running = self._core_running()
         return {
             "installed": manifest is not None,
-            "running": self._is_active(),
-            "core_running": self._core_running(),
+            "running": running,
+            "core_running": core_running,
+            "acceleration_status": self._acceleration_status(running, core_running),
             "busy": self._busy,
             "phase": self._phase,
             "progress": self._progress,
@@ -675,6 +678,107 @@ class Manager:
             return Path(path).read_text(encoding="utf-8")
         except (OSError, UnicodeDecodeError):
             return None
+
+    def _acceleration_status(self, running, core_running):
+        """Network-state gate: is the plugin core actually accelerating traffic?
+
+        Returns one of ``stopped``/``ready``/``accelerating``/``unknown``. This
+        is deliberately *not* derived from ``_phase`` (background installer
+        jobs) nor from service state alone; it requires our own core to own an
+        upped tunnel interface plus the routing/NAT rules that prove it.
+        """
+        if not running or not core_running:
+            return "stopped"
+
+        try:
+            pid = int(
+                (self.run_dir / _CORE_PID_NAME).read_text(encoding="utf-8").strip()
+            )
+        except (OSError, ValueError):
+            return "unknown"
+        if pid <= 0:
+            return "unknown"
+
+        root = Path(self.root)
+
+        # Tunnel interface must exist and be UP (IFF_UP is bit 0x1).
+        try:
+            flags_text = (
+                root / "sys" / "class" / "net" / "tun163" / "flags"
+            ).read_text(encoding="utf-8")
+            flags = int(flags_text.strip(), 16)
+        except FileNotFoundError:
+            return "ready"
+        except (OSError, ValueError):
+            return "unknown"
+        if not (flags & 0x1):
+            return "ready"
+
+        # Our own core must own the tunnel: scan only this PID's fdinfo.
+        owned = False
+        try:
+            fdinfo_dir = root / "proc" / str(pid) / "fdinfo"
+            for entry in fdinfo_dir.iterdir():
+                try:
+                    text = entry.read_text(encoding="utf-8")
+                except FileNotFoundError:
+                    continue
+                except OSError:
+                    return "unknown"
+                for line in text.splitlines():
+                    if line.split() == ["iff:", "tun163"]:
+                        owned = True
+                        break
+                if owned:
+                    break
+        except OSError:
+            return "unknown"
+        if not owned:
+            return "ready"
+
+        # Routing rule for table 179, without fwmark, read-only.
+        try:
+            proc = subprocess.run(
+                ["ip", "-j", "-4", "rule", "show"],
+                capture_output=True,
+                text=True,
+                timeout=1,
+            )
+        except (OSError, subprocess.SubprocessError):
+            return "unknown"
+        if proc.returncode != 0:
+            return "unknown"
+        try:
+            rules = json.loads(proc.stdout)
+            if not isinstance(rules, list):
+                return "unknown"
+        except (json.JSONDecodeError, ValueError):
+            return "unknown"
+        if not any(
+            isinstance(r, dict)
+            and str(r.get("table")) == "179"
+            and "fwmark" not in r
+            for r in rules
+        ):
+            return "ready"
+
+        # Exact read-only NAT rule existence check.
+        argv = [
+            "iptables", "-w", "1", "-t", "nat", "-C", "OUTPUT",
+            "-p", "udp", "--dport", "53", "-m", "mark", "!", "--mark",
+            "0x164", "-j", "DNAT", "--to-destination", "172.19.163.1:53",
+        ]
+        try:
+            proc = subprocess.run(
+                argv, capture_output=True, text=True, timeout=2
+            )
+        except (OSError, subprocess.SubprocessError):
+            return "unknown"
+        if proc.returncode == 0:
+            return "accelerating"
+        if proc.returncode == 1:
+            return "ready"
+        return "unknown"
 
     def _core_running(self):
         """Whether the core PID recorded in our own ``run/core.pid`` is alive.

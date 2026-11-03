@@ -36,6 +36,8 @@ export interface Status {
   autostart: boolean;
   platform: PlatformInfo;
   binding: BindingInfo;
+  /** 真实网络加速状态（旧后端可能缺省）。 */
+  acceleration_status?: "accelerating" | "ready" | "stopped" | "unknown";
 }
 
 /** 所有变更类 RPC 的统一应答；accepted 仅表示已入队。 */

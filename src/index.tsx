@@ -22,6 +22,7 @@ import {
   type Status,
   type UpdateInfo,
 } from "./api";
+import pluginVersion from "../package.json";
 
 const PLUGIN_TITLE = "UU加速器";
 
@@ -82,6 +83,26 @@ const progressFill: CSSProperties = {
   transition: "width 0.3s ease",
 };
 
+const runningValueStyle = { color: "#66c27c", fontSize: 12, lineHeight: 1.5 };
+
+/** 后端 acceleration_status 的中文展示。 */
+const ACCELERATION_TEXT: Record<string, string> = {
+  accelerating: "加速中",
+  ready: "待加速",
+  stopped: "未运行",
+  unknown: "状态未知",
+};
+
+function accelerationText(value: unknown): string {
+  if (
+    typeof value === "string" &&
+    Object.prototype.hasOwnProperty.call(ACCELERATION_TEXT, value)
+  ) {
+    return ACCELERATION_TEXT[value];
+  }
+  return "状态未知";
+}
+
 /** 将后端纯 SVG 转为内联图片地址（data URI）。 */
 function svgToDataUri(svg: string): string {
   return `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`;
@@ -118,6 +139,26 @@ function UuPanel() {
   const [updateResult, setUpdateResult] = useState<UpdateInfo | null>(null);
   const [updateBusy, setUpdateBusy] = useState(false);
   const [confirm, setConfirm] = useState<"uninstall" | "reset" | null>(null);
+  const [bindingExpanded, setBindingExpanded] = useState<boolean>(() => {
+    try {
+      return window.localStorage.getItem("uu-accelerator.binding-expanded") !== "false";
+    } catch {
+      return true;
+    }
+  });
+
+  const onToggleBindingExpanded = () => {
+    setBindingExpanded((prev) => {
+      const next = !prev;
+      try {
+        window.localStorage.setItem("uu-accelerator.binding-expanded", next ? "true" : "false");
+      } catch {
+        // 存储不可用时仍允许本界面切换。
+      }
+      return next;
+    });
+    if (bindingExpanded) setConfirm((c) => (c === "reset" ? null : c));
+  };
 
   const mounted = useRef(true);
   const inFlight = useRef(false);
@@ -318,13 +359,29 @@ function UuPanel() {
 
       <PanelSection title="状态">
         <PanelSectionRow>
-          <div style={rowTextStyle()}>服务状态：{running ? "运行中" : installed ? "已停止" : "未安装"}</div>
+          <div style={rowTextStyle()}>
+            加速状态：{status.acceleration_status === "accelerating" ? (
+              <span style={runningValueStyle}>加速中</span>
+            ) : (
+              accelerationText(status.acceleration_status)
+            )}
+          </div>
         </PanelSectionRow>
         <PanelSectionRow>
-          <div style={rowTextStyle()}>核心进程：{coreRunning ? "运行中" : "未运行"}</div>
+          <div style={rowTextStyle()}>
+            服务状态：{running ? <span style={runningValueStyle}>运行中</span> : installed ? "已停止" : "未安装"}
+          </div>
         </PanelSectionRow>
         <PanelSectionRow>
-          <div style={rowTextStyle()}>已安装版本：{status.version ?? "未知"}</div>
+          <div style={rowTextStyle()}>
+            核心进程：{coreRunning ? <span style={runningValueStyle}>运行中</span> : "未运行"}
+          </div>
+        </PanelSectionRow>
+        <PanelSectionRow>
+          <div style={rowTextStyle()}>插件版本：{pluginVersion.version}</div>
+        </PanelSectionRow>
+        <PanelSectionRow>
+          <div style={rowTextStyle()}>核心版本：{status.version ?? "未知"}</div>
         </PanelSectionRow>
         <PanelSectionRow>
           <div style={rowTextStyle()}>
@@ -333,7 +390,7 @@ function UuPanel() {
         </PanelSectionRow>
         <PanelSectionRow>
           <div style={rowTextStyle()}>
-            状态：{phaseText(status.phase)}
+            后台操作：{phaseText(status.phase)}
             {busy || pending ? `（进行中 ${pct}%）` : ""}
           </div>
           {(busy || pending) && (
@@ -349,15 +406,7 @@ function UuPanel() {
         )}
       </PanelSection>
 
-      <PanelSection title="运行方式">
-        <PanelSectionRow>
-          <div style={rowTextStyle()}>{CORE_LABEL}</div>
-        </PanelSectionRow>
-        <PanelSectionRow>
-          <div style={noteStyle}>
-            需系统已提供 FEX 解释器（FEXInterpreter），插件不负责安装 FEX。
-          </div>
-        </PanelSectionRow>
+      <PanelSection title="操作">
         {!canUseFex && (
           <PanelSectionRow>
             <div style={errorStyle}>当前不支持 FEX：需要 ARM64 平台且系统已提供可用的 FEXInterpreter。</div>
@@ -375,9 +424,6 @@ function UuPanel() {
             <div style={errorStyle}>检测到旧的官方安装方式，为避免冲突已禁用安装，请先手动清理旧安装。</div>
           </PanelSectionRow>
         )}
-      </PanelSection>
-
-      <PanelSection title="操作">
         <PanelSectionRow>
           <ButtonItem layout="below" onClick={onPrimary} disabled={!canInstall}>
             {primaryLabel}
@@ -431,6 +477,13 @@ function UuPanel() {
 
       <PanelSection title="手机绑定">
         <PanelSectionRow>
+          <ButtonItem layout="below" onClick={onToggleBindingExpanded}>
+            {bindingExpanded ? "隐藏绑定选项" : "显示绑定选项"}
+          </ButtonItem>
+        </PanelSectionRow>
+        {bindingExpanded && (
+          <>
+        <PanelSectionRow>
           <div style={rowTextStyle()}>
             使用手机“UU主机加速器”App 的扫码绑定入口扫描下方二维码，按手机提示绑定，再在手机选择游戏和节点；请确保手机与掌机处于同一局域网。
           </div>
@@ -473,6 +526,8 @@ function UuPanel() {
             刷新二维码
           </ButtonItem>
         </PanelSectionRow>
+          </>
+        )}
       </PanelSection>
 
       <PanelSection title="核心管理">
@@ -486,6 +541,8 @@ function UuPanel() {
             <PanelSectionRow>
               <div style={noteStyle}>仅移除本插件下载的核心运行时，不影响 Decky 前端；绑定身份会保留。</div>
             </PanelSectionRow>
+            {bindingExpanded && (
+              <>
             <PanelSectionRow>
               <ButtonItem
                 layout="below"
@@ -498,6 +555,8 @@ function UuPanel() {
             <PanelSectionRow>
               <div style={noteStyle}>重置将重新生成绑定身份，需要重新绑定。</div>
             </PanelSectionRow>
+              </>
+            )}
           </>
         ) : (
           <>
