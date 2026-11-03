@@ -153,6 +153,8 @@ class ManagerTestCase(unittest.TestCase):
             path.mkdir(parents=True, exist_ok=True)
         (self.plugin / "supervisor.py").write_text(
             "# supervisor placeholder, copied never executed\n", encoding="utf-8")
+        (self.plugin / "kernel_abi.py").write_text(
+            "# kernel_abi placeholder, copied never executed\n", encoding="utf-8")
 
         self.systemctl = FakeSystemctl()
         self.archives = {}          # md5 -> package bytes
@@ -311,6 +313,37 @@ class ManagerTestCase(unittest.TestCase):
         return runner
 
     # -- tests -----------------------------------------------------------
+    def test_install_copies_kernel_abi_helper(self):
+        self.configure_release("14.9.4")
+        manager = self.make_manager()
+        manager.install(engine="fex")
+        self.assertEqual(
+            (self.runtime / "kernel_abi.py").read_bytes(),
+            (self.plugin / "kernel_abi.py").read_bytes(),
+        )
+
+    def test_failed_upgrade_restores_kernel_abi_helper(self):
+        self.configure_release("14.9.4")
+        manager = self.make_manager()
+        manager.install(engine="fex")
+        manager.set_autostart(True)
+        original = (self.runtime / "kernel_abi.py").read_bytes()
+        (self.plugin / "kernel_abi.py").write_bytes(b"# upgraded helper\n")
+        self.configure_release("15.0.0")
+        self.systemctl.fail_start_once.add(UNIT_ID)
+        with self.assertRaises(RuntimeError):
+            manager.install(engine="fex")
+        self.assertEqual((self.runtime / "kernel_abi.py").read_bytes(), original)
+        self.assertIn(UNIT_ID, self.systemctl.active)
+
+    def test_failed_first_install_removes_kernel_abi_helper(self):
+        self.configure_release("14.9.4")
+        self.systemctl.fail_start_once.add(UNIT_ID)
+        manager = self.make_manager()
+        with self.assertRaises(RuntimeError):
+            manager.install(engine="fex")
+        self.assertFalse((self.runtime / "kernel_abi.py").exists())
+
     def test_install_records_profile_and_starts_own_service(self):
         md5 = self.configure_release("14.9.4")
         manager = self.make_manager()

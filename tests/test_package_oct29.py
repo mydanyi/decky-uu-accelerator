@@ -20,6 +20,7 @@ COPY_ITEMS = (
     "package.json",
     "main.py",
     "supervisor.py",
+    "kernel_abi.py",
     "dist",
     "LICENSE",
     "README.md",
@@ -31,6 +32,15 @@ OCT29_MODULE_DIR = "oct29"
 OCT29_MODULES = (
     f"uu-accelerator/compat/{COMPAT_DIR_NAME}/oct29/xt_cgroup.ko",
     f"uu-accelerator/compat/{COMPAT_DIR_NAME}/oct29/xt_nat.ko",
+)
+PORTABLE_DIR = f"uu-accelerator/compat/{COMPAT_DIR_NAME}/portable"
+PORTABLE_MODULES = (
+    f"{PORTABLE_DIR}/xt_cgroup.ko",
+    f"{PORTABLE_DIR}/xt_nat.ko",
+)
+PORTABLE_ABI_FILES = (
+    f"{PORTABLE_DIR}/xt_cgroup.abi.json",
+    f"{PORTABLE_DIR}/xt_nat.abi.json",
 )
 
 
@@ -60,6 +70,9 @@ class PackageOct29Test(unittest.TestCase):
             json.dumps(data, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
+
+    def _portable_path(self, name):
+        return self.project / "compat" / COMPAT_DIR_NAME / "portable" / name
 
     def _package(self):
         out_dir = self.tmp / "out"
@@ -99,14 +112,18 @@ class PackageOct29Test(unittest.TestCase):
         zip_path = self._single_zip(out_dir)
         with zipfile.ZipFile(zip_path) as archive:
             names = archive.namelist()
-        self.assertEqual(len(names), 25)
-        for module in OCT29_MODULES:
+        self.assertEqual(len(names), 30)
+        for module in OCT29_MODULES + PORTABLE_MODULES + PORTABLE_ABI_FILES:
             self.assertIn(module, names)
+        self.assertIn("uu-accelerator/kernel_abi.py", names)
         verify = self._verify(zip_path)
         self.assertEqual(verify.returncode, 0, verify.stderr)
         report = json.loads(verify.stdout)
         self.assertTrue(report["ok"])
         self.assertTrue(report["checks"].get("compat_oct29_profile_valid"))
+        self.assertTrue(report["checks"].get("portable_module_present"))
+        self.assertTrue(report["checks"].get("portable_module_sha256_matches"))
+        self.assertTrue(report["checks"].get("portable_abi_valid"))
 
     def test_packager_rejects_tampered_oct29_module_hash(self):
         data = json.loads(self._manifest_path().read_text(encoding="utf-8"))
@@ -140,6 +157,47 @@ class PackageOct29Test(unittest.TestCase):
                 payload = src.read(info.filename)
                 if info.filename == OCT29_MODULES[0]:
                     payload = b"\x7fELF" + b"\x00" * 64
+                dst.writestr(info, payload)
+        verify = self._verify(tampered)
+        self.assertNotEqual(verify.returncode, 0)
+
+
+    def test_packager_rejects_tampered_portable_module_hash(self):
+        data = json.loads(self._manifest_path().read_text(encoding="utf-8"))
+        data["portable_modules"]["xt_cgroup"]["module_sha256"] = "0" * 64
+        self._write_manifest(data)
+        result, _ = self._package()
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_packager_rejects_tampered_portable_abi_hash(self):
+        abi_path = self._portable_path("xt_cgroup.abi.json")
+        abi = json.loads(abi_path.read_text(encoding="utf-8"))
+        abi["records"] = []
+        abi_path.write_text(
+            json.dumps(abi, ensure_ascii=False, indent=2) + "\n",
+            encoding="utf-8",
+        )
+        result, _ = self._package()
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_packager_rejects_missing_portable_abi(self):
+        self._portable_path("xt_nat.abi.json").unlink()
+        result, _ = self._package()
+        self.assertNotEqual(result.returncode, 0)
+
+    def test_verifier_rejects_tampered_portable_abi(self):
+        result, out_dir = self._package()
+        self.assertEqual(result.returncode, 0, result.stderr)
+        zip_path = self._single_zip(out_dir)
+        tampered = self.tmp / "tampered-portable.zip"
+        target = PORTABLE_ABI_FILES[0]
+        with zipfile.ZipFile(zip_path) as src, zipfile.ZipFile(
+            tampered, "w"
+        ) as dst:
+            for info in src.infolist():
+                payload = src.read(info.filename)
+                if info.filename == target:
+                    payload = payload.replace(b"7.2.6", b"7.2.7", 1)
                 dst.writestr(info, payload)
         verify = self._verify(tampered)
         self.assertNotEqual(verify.returncode, 0)

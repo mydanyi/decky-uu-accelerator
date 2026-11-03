@@ -39,5 +39,15 @@
       "nat_module_sha256": "4f9ff77b3ff17afafe7336f136c019dbf644a7808ccd9ef7dc15dbe989e04cfc",
       "compiler": "aarch64-linux-gnu-gcc 13.3.0 (Ubuntu 24.04) / ld 2.42"
     }
-  ]
+  ],
+  "portable_modules": {
+    "xt_cgroup": {
+      "module_sha256": "b99c3f75c4627590b7b8c31044d298e8f2c71c5049ec9ef74b645619e11bc85f",
+      "abi_sha256": "251d8ccfe87f036892c3a48f822a09a32b019c97164ddff987121e6b2efb6745"
+    },
+    "xt_nat": {
+      "module_sha256": "ca611512b278ec83b1df633e01ec1f579e82df9435f85ad2a5aaf07c6bb99ad3",
+      "abi_sha256": "9cee5e81807373dc0f38a163d24390fcb0f10fa9ab35c43479d87758e0af201d"
+    }
+  }
 }

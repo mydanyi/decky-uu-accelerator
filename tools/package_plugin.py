@@ -15,22 +15,23 @@ The archive is intentionally minimal and deterministic:
 * only the listed root files are included;
 * only regular ``.py`` files under ``py_modules/`` are included (recursively);
 * the known ``compat/armada-7.2.6/`` kernel-module files are included from an
-  explicit list (the four modules, their GPL sources, license, Makefile,
-  manifest, README);
+  explicit list (the prebuilt baseline and child-profile modules, their GPL
+  sources, license, Makefile, manifest, README);
 * tests, tooling, node_modules, caches and the official UU payload are excluded;
 * entries are sorted and given fixed metadata + 0644 permissions.
 
-Exactly six ELF objects may be packaged: the prebuilt baseline
-``compat/armada-7.2.6/xt_cgroup.ko`` / ``compat/armada-7.2.6/xt_nat.ko`` and,
-for each known child profile directory (``oct26`` and ``oct29``), the two
-modules ``compat/armada-7.2.6/<child>/xt_cgroup.ko`` /
-``compat/armada-7.2.6/<child>/xt_nat.ko``. Each must be an ELF64 little-endian
-``ET_REL`` AArch64 relocatable whose SHA-256 equals the ``module_sha256``
-(xt_cgroup) and ``nat_module_sha256`` (xt_nat) recorded in the shipped
-``manifest.json``; each child's modules must match the unique
-``compatible_kernels`` profile whose ``module_dir`` equals that child
- directory. Any other ELF content makes packaging fail. The official UU core is always downloaded at
-runtime and is never packaged.
+Exactly eight ELF objects may be packaged: the two prebuilt baseline
+``compat/armada-7.2.6/xt_cgroup.ko`` / ``compat/armada-7.2.6/xt_nat.ko``, the
+two modules of each known child profile directory (``oct26`` and ``oct29``),
+and the two portable modules ``compat/armada-7.2.6/portable/xt_cgroup.ko`` /
+``compat/armada-7.2.6/portable/xt_nat.ko``. Each must be an ELF64 little-endian
+``ET_REL`` AArch64 relocatable. Baseline and child modules must match the
+digest keys recorded in the shipped ``manifest.json`` (child modules via the
+unique ``compatible_kernels`` profile whose ``module_dir`` equals that child
+directory); portable modules and their ``*.abi.json`` sidecars must match the
+top-level ``portable_modules`` mapping. Any other ELF content makes packaging
+fail. The official UU core is always downloaded at runtime and is never
+packaged.
 
 It never downloads anything and never touches the network.
 """
@@ -70,6 +71,7 @@ REQUIRED_ROOT_FILES = (
     "package.json",
     "main.py",
     "supervisor.py",
+    "kernel_abi.py",
     "dist/index.js",
     "LICENSE",
     "README.md",
@@ -126,6 +128,34 @@ REQUIRED_CHILD_FILES = (
     "xt_cgroup.ko",
     "xt_nat.ko",
 )
+
+# Portable kernel-module payload: one ELF module plus a JSON ABI descriptor for
+# each portable module, bound to the top-level ``portable_modules`` mapping in
+# ``manifest.json``.
+PORTABLE_DIR = COMPAT_DIR / "portable"
+PORTABLE_MODULE_NAMES = ("xt_cgroup", "xt_nat")
+
+# (relative path, module name, manifest digest key) per portable module.
+PORTABLE_MODULES = tuple(
+    ((PORTABLE_DIR / f"{name}.ko").as_posix(), name, "module_sha256")
+    for name in PORTABLE_MODULE_NAMES
+)
+
+# (relative path, module name) per portable ABI descriptor.
+PORTABLE_ABI_FILES = tuple(
+    ((PORTABLE_DIR / f"{name}.abi.json").as_posix(), name)
+    for name in PORTABLE_MODULE_NAMES
+)
+
+PORTABLE_MODULE_PATHS = tuple(relative for relative, _name, _key in PORTABLE_MODULES)
+
+# Every path permitted to contain ELF bytes (legacy compat + portable).
+ELF_MODULE_PATHS = COMPAT_MODULE_PATHS + PORTABLE_MODULE_PATHS
+
+# Required shape of a portable ABI descriptor.
+PORTABLE_ABI_SCHEMA = 1
+PORTABLE_ABI_KERNEL_RELEASE = "7.2.6"
+PORTABLE_ABI_MACHINE = "aarch64"
 
 # License the compat manifest must declare (matches the shipped GPL source).
 EXPECTED_COMPAT_LICENSE = "GPL-2.0-only"
@@ -354,6 +384,116 @@ def _validate_compat_module(root: Path, manifest: dict) -> None:
         )
 
 
+def _portable_digest(manifest: dict, name: str, key: str) -> str:
+    """Return the hex ``portable_modules`` digest for ``name``/``key``."""
+    portable = manifest.get("portable_modules")
+    if not isinstance(portable, dict):
+        _fail("compat manifest.json must define a 'portable_modules' object")
+    entry = portable.get(name)
+    if not isinstance(entry, dict):
+        _fail(f"compat manifest.json 'portable_modules' must define {name!r}")
+    value = entry.get(key)
+    if not isinstance(value, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", value):
+        _fail(
+            "compat manifest.json portable_modules must define a hex "
+            f"{name!r} {key!r}"
+        )
+    return value
+
+
+def _validate_portable_modules(root: Path, manifest: dict) -> None:
+    """Reject unless each portable module is the manifest-bound ELF."""
+    for relative, name, digest_key in PORTABLE_MODULES:
+        module_path = root / relative
+        if not module_path.is_file():
+            _fail(f"required portable module is missing: {relative}")
+        if not _is_compat_module_elf(module_path.read_bytes()):
+            _fail(
+                "portable module must be an ELF64 little-endian AArch64 ET_REL "
+                f"relocatable: {relative}"
+            )
+        expected = _portable_digest(manifest, name, digest_key)
+        actual = _sha256(module_path)
+        if actual.lower() != expected.lower():
+            _fail(
+                "portable module digest does not match portable_modules "
+                f"{name!r} {digest_key!r}: {actual} != {expected}"
+            )
+
+
+def _validate_portable_abi(root: Path, manifest: dict) -> None:
+    """Reject unless each portable ABI descriptor matches module and schema."""
+    for relative, name in PORTABLE_ABI_FILES:
+        abi_path = root / relative
+        if not abi_path.is_file():
+            _fail(f"required portable ABI file is missing: {relative}")
+
+        expected = _portable_digest(manifest, name, "abi_sha256")
+        actual = _sha256(abi_path)
+        if actual.lower() != expected.lower():
+            _fail(
+                "portable ABI digest does not match portable_modules "
+                f"{name!r} 'abi_sha256': {actual} != {expected}"
+            )
+
+        abi = _load_json(abi_path)
+        schema = abi.get("schema")
+        if type(schema) is not int or schema != PORTABLE_ABI_SCHEMA:
+            _fail(f"portable ABI {relative} must declare integer schema 1")
+        if abi.get("kernel_release") != PORTABLE_ABI_KERNEL_RELEASE:
+            _fail(
+                f"portable ABI {relative} 'kernel_release' must be "
+                f"{PORTABLE_ABI_KERNEL_RELEASE!r}"
+            )
+        if abi.get("machine") != PORTABLE_ABI_MACHINE:
+            _fail(
+                f"portable ABI {relative} 'machine' must be "
+                f"{PORTABLE_ABI_MACHINE!r}"
+            )
+
+        module_relative = (PORTABLE_DIR / f"{name}.ko").as_posix()
+        module_digest = _sha256(root / module_relative)
+        recorded = abi.get("module_sha256")
+        if not isinstance(recorded, str) or recorded.strip().lower() != module_digest:
+            _fail(
+                f"portable ABI {relative} 'module_sha256' must equal the module "
+                f"digest {module_digest}"
+            )
+
+        records = abi.get("records")
+        if not isinstance(records, list) or not records:
+            _fail(f"portable ABI {relative} must define a non-empty 'records' list")
+        record_names = set()
+        for record in records:
+            if not isinstance(record, dict):
+                _fail(f"portable ABI {relative} 'records' entries must be objects")
+            record_name = record.get("name")
+            if not isinstance(record_name, str) or not record_name:
+                _fail(
+                    f"portable ABI {relative} 'records' entries must define a "
+                    "non-empty 'name'"
+                )
+            record_names.add(record_name)
+
+        for field in ("public_roots", "required_names"):
+            values = abi.get(field)
+            if not isinstance(values, list) or not values:
+                _fail(
+                    f"portable ABI {relative} must define a non-empty {field!r} list"
+                )
+            if not all(isinstance(item, str) and item for item in values):
+                _fail(
+                    f"portable ABI {relative} {field!r} must contain non-empty "
+                    "strings"
+                )
+            uncovered = sorted(set(values) - record_names)
+            if uncovered:
+                _fail(
+                    f"portable ABI {relative} {field!r} names are not covered by "
+                    f"'records': {', '.join(uncovered)}"
+                )
+
+
 def _collect_compat_files(root: Path) -> "list[tuple[Path, str]]":
     compat_dir = root / COMPAT_DIR
     if not compat_dir.is_dir():
@@ -380,6 +520,13 @@ def _collect_compat_files(root: Path) -> "list[tuple[Path, str]]":
 
     manifest = _load_json(root / COMPAT_DIR / "manifest.json")
     _validate_compat_module(root, manifest)
+    _validate_portable_modules(root, manifest)
+    _validate_portable_abi(root, manifest)
+
+    for relative, _name, _key in PORTABLE_MODULES:
+        entries.append((root / relative, relative))
+    for relative, _name in PORTABLE_ABI_FILES:
+        entries.append((root / relative, relative))
     return entries
 
 
@@ -397,7 +544,7 @@ def _write_zip(zip_path: Path, entries: "list[tuple[Path, str]]") -> int:
     ) as archive:
         for source, relative in ordered:
             data = source.read_bytes()
-            if data[:4] == _ELF_MAGIC and relative not in COMPAT_MODULE_PATHS:
+            if data[:4] == _ELF_MAGIC and relative not in ELF_MODULE_PATHS:
                 _fail(f"refusing to package ELF binary: {relative}")
             info = zipfile.ZipInfo(_entry_arcname(relative), date_time=_ZIP_DATE_TIME)
             info.compress_type = zipfile.ZIP_DEFLATED

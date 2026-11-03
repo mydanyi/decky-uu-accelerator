@@ -56,6 +56,10 @@ _MANIFEST_NAME = "install.json"
 _LAUNCH_NAME = "launch.json"
 _SUPERVISOR_NAME = "supervisor.py"
 _SUPERVISOR_SOURCE = "supervisor.py"
+# The standalone ABI helper the supervisor imports for the portable profile.
+# Both files are copied into the runtime dir as one unit on every install.
+_KERNEL_ABI_NAME = "kernel_abi.py"
+_KERNEL_ABI_SOURCE = "kernel_abi.py"
 _STATE_NAME = "state.json"
 _IDENTITY_DIR = "identity"
 _IDENTITY_NAME = ".uuplugin_uuid"
@@ -503,6 +507,7 @@ class Manager:
         for name, content in (
             (_LAUNCH_NAME, snapshot["launch"]),
             (_SUPERVISOR_NAME, snapshot["supervisor"]),
+            (_KERNEL_ABI_NAME, snapshot.get("kernel_abi")),
             (_MANIFEST_NAME, snapshot["manifest_bytes"]),
         ):
             path = self.runtime_dir / name
@@ -543,6 +548,7 @@ class Manager:
             "release": self._release_from_manifest(manifest),
             "launch": self._read_bytes(self.launch_path),
             "supervisor": self._read_bytes(self.supervisor_path),
+            "kernel_abi": self._read_bytes(self.runtime_dir / _KERNEL_ABI_NAME),
         }
 
     def _make_manifest(self, choice, version, md5, release):
@@ -621,9 +627,36 @@ class Manager:
             self._remove_file(link)
 
     def _write_supervisor(self):
+        """Install the supervisor together with its ABI helper.
+
+        Both files are required, because the supervisor imports ``kernel_abi``
+        for the portable profile. The helper's previous bytes are captured
+        first, so a failure leaves the last working helper in place -- or, on
+        a first install, no half-written new one behind.
+        """
         source = self.plugin_dir / _SUPERVISOR_SOURCE
+        abi_source = self.plugin_dir / _KERNEL_ABI_SOURCE
+        for path in (source, abi_source):
+            if not path.is_file():
+                raise RuntimeError("运行时文件缺失: {}".format(path))
+
         self.runtime_dir.mkdir(parents=True, exist_ok=True)
-        shutil.copyfile(str(source), str(self.supervisor_path))
+        abi_path = self.runtime_dir / _KERNEL_ABI_NAME
+        helper_before = self._read_bytes(abi_path)
+        supervisor_before = self._read_bytes(self.supervisor_path)
+        try:
+            self._write_bytes(abi_path, abi_source.read_bytes())
+            shutil.copyfile(str(source), str(self.supervisor_path))
+        except OSError:
+            if helper_before is None:
+                self._remove_file(abi_path)
+            else:
+                self._write_bytes(abi_path, helper_before)
+            if supervisor_before is None:
+                self._remove_file(self.supervisor_path)
+            else:
+                self._write_bytes(self.supervisor_path, supervisor_before)
+            raise
 
     def _write_launch(self, choice):
         launch = {

@@ -1,0 +1,5060 @@
+{
+  "kernel_release": "7.2.6",
+  "machine": "aarch64",
+  "module_sha256": "ca611512b278ec83b1df633e01ec1f579e82df9435f85ad2a5aaf07c6bb99ad3",
+  "public_roots": [
+    "sk_buff",
+    "module",
+    "xt_action_param",
+    "xt_target",
+    "xt_tgchk_param",
+    "xt_tgdtor_param",
+    "nf_nat_range2",
+    "ip_conntrack_info"
+  ],
+  "records": [
+    {
+      "kind": 4,
+      "name": "_ddebug_info",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "descs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "_ddebug"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "classes",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "ddebug_class_map"
+              }
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "num_descs",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 160,
+            "bit_width": 0,
+            "name": "num_classes",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          }
+        ],
+        "name": "_ddebug_info",
+        "size": 24
+      }
+    },
+    {
+      "kind": 4,
+      "name": "in6_addr",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "in6_u",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "u6_addr8",
+                  "type": {
+                    "element": {
+                      "bit_offset": 0,
+                      "bit_width": 8,
+                      "encoding": 0,
+                      "kind": "int",
+                      "size": 1
+                    },
+                    "kind": "array",
+                    "nelems": 16
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "u6_addr16",
+                  "type": {
+                    "element": {
+                      "bit_offset": 0,
+                      "bit_width": 16,
+                      "encoding": 0,
+                      "kind": "int",
+                      "size": 2
+                    },
+                    "kind": "array",
+                    "nelems": 8
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "u6_addr32",
+                  "type": {
+                    "element": {
+                      "bit_offset": 0,
+                      "bit_width": 32,
+                      "encoding": 0,
+                      "kind": "int",
+                      "size": 4
+                    },
+                    "kind": "array",
+                    "nelems": 4
+                  }
+                }
+              ],
+              "size": 16
+            }
+          }
+        ],
+        "name": "in6_addr",
+        "size": 16
+      }
+    },
+    {
+      "kind": 4,
+      "name": "in_addr",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "s_addr",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          }
+        ],
+        "name": "in_addr",
+        "size": 4
+      }
+    },
+    {
+      "kind": 4,
+      "name": "kcov_common_handle_id",
+      "signature": {
+        "kind": "struct",
+        "members": [],
+        "name": "kcov_common_handle_id",
+        "size": 0
+      }
+    },
+    {
+      "kind": 4,
+      "name": "kobject",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "name",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "entry",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "list_head"
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "parent",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kobject"
+              }
+            }
+          },
+          {
+            "bit_offset": 256,
+            "bit_width": 0,
+            "name": "kset",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kset"
+              }
+            }
+          },
+          {
+            "bit_offset": 320,
+            "bit_width": 0,
+            "name": "ktype",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kobj_type"
+              }
+            }
+          },
+          {
+            "bit_offset": 384,
+            "bit_width": 0,
+            "name": "sd",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kernfs_node"
+              }
+            }
+          },
+          {
+            "bit_offset": 448,
+            "bit_width": 0,
+            "name": "kref",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "kref"
+            }
+          },
+          {
+            "bit_offset": 480,
+            "bit_width": 1,
+            "name": "state_initialized",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 481,
+            "bit_width": 1,
+            "name": "state_in_sysfs",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 482,
+            "bit_width": 1,
+            "name": "state_add_uevent_sent",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 483,
+            "bit_width": 1,
+            "name": "state_remove_uevent_sent",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 484,
+            "bit_width": 1,
+            "name": "uevent_suppress",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          }
+        ],
+        "name": "kobject",
+        "size": 64
+      }
+    },
+    {
+      "kind": 4,
+      "name": "kref",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "refcount",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "refcount_struct"
+            }
+          }
+        ],
+        "name": "kref",
+        "size": 4
+      }
+    },
+    {
+      "kind": 4,
+      "name": "latch_tree_node",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "node",
+            "type": {
+              "element": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "rb_node"
+              },
+              "kind": "array",
+              "nelems": 2
+            }
+          }
+        ],
+        "name": "latch_tree_node",
+        "size": 48
+      }
+    },
+    {
+      "kind": 4,
+      "name": "list_head",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "next",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "list_head"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "prev",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "list_head"
+              }
+            }
+          }
+        ],
+        "name": "list_head",
+        "size": 16
+      }
+    },
+    {
+      "kind": 4,
+      "name": "llist_node",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "next",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "llist_node"
+              }
+            }
+          }
+        ],
+        "name": "llist_node",
+        "size": 8
+      }
+    },
+    {
+      "kind": 4,
+      "name": "mod_arch_specific",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "core",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "mod_plt_sec"
+            }
+          },
+          {
+            "bit_offset": 96,
+            "bit_width": 0,
+            "name": "init",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "mod_plt_sec"
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "ftrace_trampolines",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "plt_entry"
+              }
+            }
+          },
+          {
+            "bit_offset": 256,
+            "bit_width": 0,
+            "name": "init_ftrace_trampolines",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "plt_entry"
+              }
+            }
+          }
+        ],
+        "name": "mod_arch_specific",
+        "size": 40
+      }
+    },
+    {
+      "kind": 4,
+      "name": "mod_kallsyms",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "symtab",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "elf64_sym"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "num_symtab",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "strtab",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "typetab",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          }
+        ],
+        "name": "mod_kallsyms",
+        "size": 32
+      }
+    },
+    {
+      "kind": 4,
+      "name": "mod_plt_sec",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "plt_shndx",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 1,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 32,
+            "bit_width": 0,
+            "name": "plt_num_entries",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 1,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "plt_max_entries",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 1,
+              "kind": "int",
+              "size": 4
+            }
+          }
+        ],
+        "name": "mod_plt_sec",
+        "size": 12
+      }
+    },
+    {
+      "kind": 4,
+      "name": "mod_tree_node",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "mod",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "node",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "latch_tree_node"
+            }
+          }
+        ],
+        "name": "mod_tree_node",
+        "size": 56
+      }
+    },
+    {
+      "kind": 4,
+      "name": "module",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "state",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "enum",
+              "ref_name": "module_state"
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "list",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "list_head"
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "name",
+            "type": {
+              "element": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              },
+              "kind": "array",
+              "nelems": 56
+            }
+          },
+          {
+            "bit_offset": 640,
+            "bit_width": 0,
+            "name": "mkobj",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "module_kobject"
+            }
+          },
+          {
+            "bit_offset": 1408,
+            "bit_width": 0,
+            "name": "modinfo_attrs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module_attribute"
+              }
+            }
+          },
+          {
+            "bit_offset": 1472,
+            "bit_width": 0,
+            "name": "version",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 1536,
+            "bit_width": 0,
+            "name": "srcversion",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 1600,
+            "bit_width": 0,
+            "name": "imported_namespaces",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 1664,
+            "bit_width": 0,
+            "name": "holders_dir",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kobject"
+              }
+            }
+          },
+          {
+            "bit_offset": 1728,
+            "bit_width": 0,
+            "name": "syms",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kernel_symbol"
+              }
+            }
+          },
+          {
+            "bit_offset": 1792,
+            "bit_width": 0,
+            "name": "crcs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 32,
+                "encoding": 0,
+                "kind": "int",
+                "size": 4
+              }
+            }
+          },
+          {
+            "bit_offset": 1856,
+            "bit_width": 0,
+            "name": "flagstab",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 1920,
+            "bit_width": 0,
+            "name": "num_syms",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 1984,
+            "bit_width": 0,
+            "name": "param_lock",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "mutex"
+            }
+          },
+          {
+            "bit_offset": 2176,
+            "bit_width": 0,
+            "name": "kp",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kernel_param"
+              }
+            }
+          },
+          {
+            "bit_offset": 2240,
+            "bit_width": 0,
+            "name": "num_kp",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 2272,
+            "bit_width": 0,
+            "name": "using_gplonly_symbols",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 4,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 2280,
+            "bit_width": 0,
+            "name": "async_probe_requested",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 4,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 2304,
+            "bit_width": 0,
+            "name": "num_exentries",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 2368,
+            "bit_width": 0,
+            "name": "extable",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "exception_table_entry"
+              }
+            }
+          },
+          {
+            "bit_offset": 2432,
+            "bit_width": 0,
+            "name": "init",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "args": [],
+                "kind": "proto",
+                "ret": {
+                  "bit_offset": 0,
+                  "bit_width": 32,
+                  "encoding": 1,
+                  "kind": "int",
+                  "size": 4
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 2560,
+            "bit_width": 0,
+            "name": "mem",
+            "type": {
+              "element": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module_memory"
+              },
+              "kind": "array",
+              "nelems": 7
+            }
+          },
+          {
+            "bit_offset": 6592,
+            "bit_width": 0,
+            "name": "arch",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "mod_arch_specific"
+            }
+          },
+          {
+            "bit_offset": 6912,
+            "bit_width": 0,
+            "name": "taints",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 64,
+              "encoding": 0,
+              "kind": "int",
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 6976,
+            "bit_width": 0,
+            "name": "num_bugs",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 7040,
+            "bit_width": 0,
+            "name": "bug_list",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "list_head"
+            }
+          },
+          {
+            "bit_offset": 7168,
+            "bit_width": 0,
+            "name": "bug_table",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "bug_entry"
+              }
+            }
+          },
+          {
+            "bit_offset": 7232,
+            "bit_width": 0,
+            "name": "kallsyms",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "mod_kallsyms"
+              }
+            }
+          },
+          {
+            "bit_offset": 7296,
+            "bit_width": 0,
+            "name": "core_kallsyms",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "mod_kallsyms"
+            }
+          },
+          {
+            "bit_offset": 7552,
+            "bit_width": 0,
+            "name": "sect_attrs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module_sect_attrs"
+              }
+            }
+          },
+          {
+            "bit_offset": 7616,
+            "bit_width": 0,
+            "name": "notes_attrs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module_notes_attrs"
+              }
+            }
+          },
+          {
+            "bit_offset": 7680,
+            "bit_width": 0,
+            "name": "args",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 7744,
+            "bit_width": 0,
+            "name": "percpu",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 7808,
+            "bit_width": 0,
+            "name": "percpu_size",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 7872,
+            "bit_width": 0,
+            "name": "noinstr_text_start",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 7936,
+            "bit_width": 0,
+            "name": "noinstr_text_size",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 7968,
+            "bit_width": 0,
+            "name": "num_tracepoints",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8000,
+            "bit_width": 0,
+            "name": "tracepoints_ptrs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 32,
+                "encoding": 1,
+                "kind": "int",
+                "size": 4
+              }
+            }
+          },
+          {
+            "bit_offset": 8064,
+            "bit_width": 0,
+            "name": "num_srcu_structs",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8128,
+            "bit_width": 0,
+            "name": "srcu_struct_ptrs",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ptr",
+                "pointee": {
+                  "kind": "ref",
+                  "ref_kind": "struct",
+                  "ref_name": "srcu_struct"
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 8192,
+            "bit_width": 0,
+            "name": "num_bpf_raw_events",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8256,
+            "bit_width": 0,
+            "name": "bpf_raw_events",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "bpf_raw_event_map"
+              }
+            }
+          },
+          {
+            "bit_offset": 8320,
+            "bit_width": 0,
+            "name": "btf_data_size",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8352,
+            "bit_width": 0,
+            "name": "btf_base_data_size",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8384,
+            "bit_width": 0,
+            "name": "btf_data",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 8448,
+            "bit_width": 0,
+            "name": "btf_base_data",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 8512,
+            "bit_width": 0,
+            "name": "jump_entries",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "jump_entry"
+              }
+            }
+          },
+          {
+            "bit_offset": 8576,
+            "bit_width": 0,
+            "name": "num_jump_entries",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8608,
+            "bit_width": 0,
+            "name": "num_trace_bprintk_fmt",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8640,
+            "bit_width": 0,
+            "name": "trace_bprintk_fmt_start",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ptr",
+                "pointee": {
+                  "bit_offset": 0,
+                  "bit_width": 8,
+                  "encoding": 0,
+                  "kind": "int",
+                  "size": 1
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 8704,
+            "bit_width": 0,
+            "name": "trace_events",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ptr",
+                "pointee": {
+                  "kind": "ref",
+                  "ref_kind": "struct",
+                  "ref_name": "trace_event_call"
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 8768,
+            "bit_width": 0,
+            "name": "num_trace_events",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8832,
+            "bit_width": 0,
+            "name": "trace_evals",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ptr",
+                "pointee": {
+                  "kind": "ref",
+                  "ref_kind": "struct",
+                  "ref_name": "trace_eval_map"
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 8896,
+            "bit_width": 0,
+            "name": "num_trace_evals",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8928,
+            "bit_width": 0,
+            "name": "num_ftrace_callsites",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 8960,
+            "bit_width": 0,
+            "name": "ftrace_callsites",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 64,
+                "encoding": 0,
+                "kind": "int",
+                "size": 8
+              }
+            }
+          },
+          {
+            "bit_offset": 9024,
+            "bit_width": 0,
+            "name": "kprobes_text_start",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 9088,
+            "bit_width": 0,
+            "name": "kprobes_text_size",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 9152,
+            "bit_width": 0,
+            "name": "kprobe_blacklist",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 64,
+                "encoding": 0,
+                "kind": "int",
+                "size": 8
+              }
+            }
+          },
+          {
+            "bit_offset": 9216,
+            "bit_width": 0,
+            "name": "num_kprobe_blacklist",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 9280,
+            "bit_width": 0,
+            "name": "source_list",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "list_head"
+            }
+          },
+          {
+            "bit_offset": 9408,
+            "bit_width": 0,
+            "name": "target_list",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "list_head"
+            }
+          },
+          {
+            "bit_offset": 9536,
+            "bit_width": 0,
+            "name": "exit",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "args": [],
+                "kind": "proto",
+                "ret": {
+                  "kind": "void"
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 9600,
+            "bit_width": 0,
+            "name": "refcnt",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "counter",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 32,
+                    "encoding": 1,
+                    "kind": "int",
+                    "size": 4
+                  }
+                }
+              ],
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 9664,
+            "bit_width": 0,
+            "name": "dyndbg_info",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "_ddebug_info"
+            }
+          }
+        ],
+        "name": "module",
+        "size": 1280
+      }
+    },
+    {
+      "kind": 4,
+      "name": "module_kobject",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "kobj",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "kobject"
+            }
+          },
+          {
+            "bit_offset": 512,
+            "bit_width": 0,
+            "name": "mod",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module"
+              }
+            }
+          },
+          {
+            "bit_offset": 576,
+            "bit_width": 0,
+            "name": "drivers_dir",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "kobject"
+              }
+            }
+          },
+          {
+            "bit_offset": 640,
+            "bit_width": 0,
+            "name": "mp",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module_param_attrs"
+              }
+            }
+          },
+          {
+            "bit_offset": 704,
+            "bit_width": 0,
+            "name": "kobj_completion",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "completion"
+              }
+            }
+          }
+        ],
+        "name": "module_kobject",
+        "size": 96
+      }
+    },
+    {
+      "kind": 4,
+      "name": "module_memory",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "base",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "is_rox",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 4,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 96,
+            "bit_width": 0,
+            "name": "size",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "mtn",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "mod_tree_node"
+            }
+          }
+        ],
+        "name": "module_memory",
+        "size": 72
+      }
+    },
+    {
+      "kind": 4,
+      "name": "mutex",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "owner",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "counter",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 64,
+                    "encoding": 1,
+                    "kind": "int",
+                    "size": 8
+                  }
+                }
+              ],
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "wait_lock",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "raw_spinlock"
+            }
+          },
+          {
+            "bit_offset": 96,
+            "bit_width": 0,
+            "name": "osq",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "optimistic_spin_queue"
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "first_waiter",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "mutex_waiter"
+              }
+            }
+          }
+        ],
+        "name": "mutex",
+        "size": 24
+      }
+    },
+    {
+      "kind": 4,
+      "name": "nf_nat_range2",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "flags",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 32,
+            "bit_width": 0,
+            "name": "min_addr",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "union",
+              "ref_name": "nf_inet_addr"
+            }
+          },
+          {
+            "bit_offset": 160,
+            "bit_width": 0,
+            "name": "max_addr",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "union",
+              "ref_name": "nf_inet_addr"
+            }
+          },
+          {
+            "bit_offset": 288,
+            "bit_width": 0,
+            "name": "min_proto",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "union",
+              "ref_name": "nf_conntrack_man_proto"
+            }
+          },
+          {
+            "bit_offset": 304,
+            "bit_width": 0,
+            "name": "max_proto",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "union",
+              "ref_name": "nf_conntrack_man_proto"
+            }
+          },
+          {
+            "bit_offset": 320,
+            "bit_width": 0,
+            "name": "base_proto",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "union",
+              "ref_name": "nf_conntrack_man_proto"
+            }
+          }
+        ],
+        "name": "nf_nat_range2",
+        "size": 44
+      }
+    },
+    {
+      "kind": 4,
+      "name": "optimistic_spin_queue",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "tail",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "counter",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 32,
+                    "encoding": 1,
+                    "kind": "int",
+                    "size": 4
+                  }
+                }
+              ],
+              "size": 4
+            }
+          }
+        ],
+        "name": "optimistic_spin_queue",
+        "size": 4
+      }
+    },
+    {
+      "kind": 4,
+      "name": "qspinlock",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "val",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "counter",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 1,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      }
+                    ],
+                    "size": 4
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "locked",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 8,
+                        "bit_width": 0,
+                        "name": "pending",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      }
+                    ],
+                    "size": 2
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "locked_pending",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 16,
+                        "bit_width": 0,
+                        "name": "tail",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      }
+                    ],
+                    "size": 4
+                  }
+                }
+              ],
+              "size": 4
+            }
+          }
+        ],
+        "name": "qspinlock",
+        "size": 4
+      }
+    },
+    {
+      "kind": 4,
+      "name": "raw_spinlock",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "raw_lock",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "qspinlock"
+            }
+          }
+        ],
+        "name": "raw_spinlock",
+        "size": 4
+      }
+    },
+    {
+      "kind": 4,
+      "name": "rb_node",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "__rb_parent_color",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 64,
+              "encoding": 0,
+              "kind": "int",
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "rb_right",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "rb_node"
+              }
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "rb_left",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "rb_node"
+              }
+            }
+          }
+        ],
+        "name": "rb_node",
+        "size": 24
+      }
+    },
+    {
+      "kind": 4,
+      "name": "refcount_struct",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "refs",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "counter",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 32,
+                    "encoding": 1,
+                    "kind": "int",
+                    "size": 4
+                  }
+                }
+              ],
+              "size": 4
+            }
+          }
+        ],
+        "name": "refcount_struct",
+        "size": 4
+      }
+    },
+    {
+      "kind": 4,
+      "name": "sk_buff",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "next",
+                        "type": {
+                          "kind": "ptr",
+                          "pointee": {
+                            "kind": "ref",
+                            "ref_kind": "struct",
+                            "ref_name": "sk_buff"
+                          }
+                        }
+                      },
+                      {
+                        "bit_offset": 64,
+                        "bit_width": 0,
+                        "name": "prev",
+                        "type": {
+                          "kind": "ptr",
+                          "pointee": {
+                            "kind": "ref",
+                            "ref_kind": "struct",
+                            "ref_name": "sk_buff"
+                          }
+                        }
+                      },
+                      {
+                        "bit_offset": 128,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "dev",
+                              "type": {
+                                "kind": "ptr",
+                                "pointee": {
+                                  "kind": "ref",
+                                  "ref_kind": "struct",
+                                  "ref_name": "net_device"
+                                }
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "dev_scratch",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 64,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 8
+                              }
+                            }
+                          ],
+                          "size": 8
+                        }
+                      }
+                    ],
+                    "size": 24
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "rbnode",
+                  "type": {
+                    "kind": "ref",
+                    "ref_kind": "struct",
+                    "ref_name": "rb_node"
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "list",
+                  "type": {
+                    "kind": "ref",
+                    "ref_kind": "struct",
+                    "ref_name": "list_head"
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "ll_node",
+                  "type": {
+                    "kind": "ref",
+                    "ref_kind": "struct",
+                    "ref_name": "llist_node"
+                  }
+                }
+              ],
+              "size": 24
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "sk",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "sock"
+              }
+            }
+          },
+          {
+            "bit_offset": 256,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "tstamp",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 64,
+                    "encoding": 1,
+                    "kind": "int",
+                    "size": 8
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "skb_mstamp_ns",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 64,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 8
+                  }
+                }
+              ],
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 320,
+            "bit_width": 0,
+            "name": "cb",
+            "type": {
+              "element": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              },
+              "kind": "array",
+              "nelems": 48
+            }
+          },
+          {
+            "bit_offset": 704,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "_skb_refdst",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 64,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 8
+                        }
+                      },
+                      {
+                        "bit_offset": 64,
+                        "bit_width": 0,
+                        "name": "destructor",
+                        "type": {
+                          "kind": "ptr",
+                          "pointee": {
+                            "args": [
+                              {
+                                "kind": "ptr",
+                                "pointee": {
+                                  "kind": "ref",
+                                  "ref_kind": "struct",
+                                  "ref_name": "sk_buff"
+                                }
+                              }
+                            ],
+                            "kind": "proto",
+                            "ret": {
+                              "kind": "void"
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "size": 16
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "tcp_tsorted_anchor",
+                  "type": {
+                    "kind": "ref",
+                    "ref_kind": "struct",
+                    "ref_name": "list_head"
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "_sk_redir",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 64,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 8
+                  }
+                }
+              ],
+              "size": 16
+            }
+          },
+          {
+            "bit_offset": 832,
+            "bit_width": 0,
+            "name": "_nfct",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 64,
+              "encoding": 0,
+              "kind": "int",
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 896,
+            "bit_width": 0,
+            "name": "len",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 928,
+            "bit_width": 0,
+            "name": "data_len",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 960,
+            "bit_width": 0,
+            "name": "mac_len",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 976,
+            "bit_width": 0,
+            "name": "hdr_len",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 992,
+            "bit_width": 0,
+            "name": "queue_mapping",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 1008,
+            "bit_width": 0,
+            "name": "__cloned_offset",
+            "type": {
+              "element": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              },
+              "kind": "array",
+              "nelems": 0
+            }
+          },
+          {
+            "bit_offset": 1008,
+            "bit_width": 1,
+            "name": "cloned",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1009,
+            "bit_width": 1,
+            "name": "nohdr",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1010,
+            "bit_width": 2,
+            "name": "fclone",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1012,
+            "bit_width": 1,
+            "name": "peeked",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1013,
+            "bit_width": 1,
+            "name": "head_frag",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1014,
+            "bit_width": 1,
+            "name": "pfmemalloc",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1015,
+            "bit_width": 1,
+            "name": "pp_recycle",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1016,
+            "bit_width": 0,
+            "name": "active_extensions",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 1024,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "__pkt_type_offset",
+                        "type": {
+                          "element": {
+                            "bit_offset": 0,
+                            "bit_width": 8,
+                            "encoding": 0,
+                            "kind": "int",
+                            "size": 1
+                          },
+                          "kind": "array",
+                          "nelems": 0
+                        }
+                      },
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 3,
+                        "name": "pkt_type",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 3,
+                        "bit_width": 1,
+                        "name": "ignore_df",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 4,
+                        "bit_width": 1,
+                        "name": "dst_pending_confirm",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 5,
+                        "bit_width": 2,
+                        "name": "ip_summed",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 7,
+                        "bit_width": 1,
+                        "name": "ooo_okay",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 8,
+                        "bit_width": 0,
+                        "name": "__mono_tc_offset",
+                        "type": {
+                          "element": {
+                            "bit_offset": 0,
+                            "bit_width": 8,
+                            "encoding": 0,
+                            "kind": "int",
+                            "size": 1
+                          },
+                          "kind": "array",
+                          "nelems": 0
+                        }
+                      },
+                      {
+                        "bit_offset": 8,
+                        "bit_width": 2,
+                        "name": "tstamp_type",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 10,
+                        "bit_width": 1,
+                        "name": "tc_at_ingress",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 11,
+                        "bit_width": 1,
+                        "name": "tc_skip_classify",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 12,
+                        "bit_width": 1,
+                        "name": "remcsum_offload",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 13,
+                        "bit_width": 1,
+                        "name": "csum_complete_sw",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 14,
+                        "bit_width": 2,
+                        "name": "csum_level",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 16,
+                        "bit_width": 1,
+                        "name": "inner_protocol_type",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 17,
+                        "bit_width": 1,
+                        "name": "l4_hash",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 18,
+                        "bit_width": 1,
+                        "name": "sw_hash",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 19,
+                        "bit_width": 1,
+                        "name": "wifi_acked_valid",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 20,
+                        "bit_width": 1,
+                        "name": "wifi_acked",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 21,
+                        "bit_width": 1,
+                        "name": "no_fcs",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 22,
+                        "bit_width": 1,
+                        "name": "encapsulation",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 23,
+                        "bit_width": 1,
+                        "name": "encap_hdr_csum",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 24,
+                        "bit_width": 1,
+                        "name": "csum_valid",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 25,
+                        "bit_width": 2,
+                        "name": "ndisc_nodetype",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 27,
+                        "bit_width": 1,
+                        "name": "ipvs_property",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 28,
+                        "bit_width": 1,
+                        "name": "nf_trace",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 29,
+                        "bit_width": 1,
+                        "name": "offload_fwd_mark",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 30,
+                        "bit_width": 1,
+                        "name": "offload_l3_fwd_mark",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 31,
+                        "bit_width": 1,
+                        "name": "redirected",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 32,
+                        "bit_width": 1,
+                        "name": "nf_skip_egress",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 33,
+                        "bit_width": 1,
+                        "name": "slow_gro",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 34,
+                        "bit_width": 1,
+                        "name": "unreadable",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 35,
+                        "bit_width": 2,
+                        "name": "tc_depth",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 48,
+                        "bit_width": 0,
+                        "name": "tc_index",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 64,
+                        "bit_width": 0,
+                        "name": "alloc_cpu",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 96,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "csum",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "",
+                              "type": {
+                                "anonymous": true,
+                                "kind": "struct",
+                                "members": [
+                                  {
+                                    "bit_offset": 0,
+                                    "bit_width": 0,
+                                    "name": "csum_start",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  },
+                                  {
+                                    "bit_offset": 16,
+                                    "bit_width": 0,
+                                    "name": "csum_offset",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  }
+                                ],
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 128,
+                        "bit_width": 0,
+                        "name": "priority",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 160,
+                        "bit_width": 0,
+                        "name": "skb_iif",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 1,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 192,
+                        "bit_width": 0,
+                        "name": "hash",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 224,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "vlan_all",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "",
+                              "type": {
+                                "anonymous": true,
+                                "kind": "struct",
+                                "members": [
+                                  {
+                                    "bit_offset": 0,
+                                    "bit_width": 0,
+                                    "name": "vlan_proto",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  },
+                                  {
+                                    "bit_offset": 16,
+                                    "bit_width": 0,
+                                    "name": "vlan_tci",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  }
+                                ],
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 256,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "napi_id",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "sender_cpu",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 288,
+                        "bit_width": 0,
+                        "name": "secmark",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 320,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "mark",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "reserved_tailroom",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 352,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "inner_protocol",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 16,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 2
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "inner_ipproto",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 8,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 1
+                              }
+                            }
+                          ],
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 368,
+                        "bit_width": 0,
+                        "name": "inner_transport_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 384,
+                        "bit_width": 0,
+                        "name": "inner_network_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 400,
+                        "bit_width": 0,
+                        "name": "inner_mac_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 416,
+                        "bit_width": 0,
+                        "name": "protocol",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 432,
+                        "bit_width": 0,
+                        "name": "transport_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 448,
+                        "bit_width": 0,
+                        "name": "network_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 464,
+                        "bit_width": 0,
+                        "name": "mac_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 480,
+                        "bit_width": 0,
+                        "name": "kcov_handle",
+                        "type": {
+                          "kind": "ref",
+                          "ref_kind": "struct",
+                          "ref_name": "kcov_common_handle_id"
+                        }
+                      }
+                    ],
+                    "size": 60
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "headers",
+                  "type": {
+                    "anonymous": true,
+                    "kind": "struct",
+                    "members": [
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 0,
+                        "name": "__pkt_type_offset",
+                        "type": {
+                          "element": {
+                            "bit_offset": 0,
+                            "bit_width": 8,
+                            "encoding": 0,
+                            "kind": "int",
+                            "size": 1
+                          },
+                          "kind": "array",
+                          "nelems": 0
+                        }
+                      },
+                      {
+                        "bit_offset": 0,
+                        "bit_width": 3,
+                        "name": "pkt_type",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 3,
+                        "bit_width": 1,
+                        "name": "ignore_df",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 4,
+                        "bit_width": 1,
+                        "name": "dst_pending_confirm",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 5,
+                        "bit_width": 2,
+                        "name": "ip_summed",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 7,
+                        "bit_width": 1,
+                        "name": "ooo_okay",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 8,
+                        "bit_width": 0,
+                        "name": "__mono_tc_offset",
+                        "type": {
+                          "element": {
+                            "bit_offset": 0,
+                            "bit_width": 8,
+                            "encoding": 0,
+                            "kind": "int",
+                            "size": 1
+                          },
+                          "kind": "array",
+                          "nelems": 0
+                        }
+                      },
+                      {
+                        "bit_offset": 8,
+                        "bit_width": 2,
+                        "name": "tstamp_type",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 10,
+                        "bit_width": 1,
+                        "name": "tc_at_ingress",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 11,
+                        "bit_width": 1,
+                        "name": "tc_skip_classify",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 12,
+                        "bit_width": 1,
+                        "name": "remcsum_offload",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 13,
+                        "bit_width": 1,
+                        "name": "csum_complete_sw",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 14,
+                        "bit_width": 2,
+                        "name": "csum_level",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 16,
+                        "bit_width": 1,
+                        "name": "inner_protocol_type",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 17,
+                        "bit_width": 1,
+                        "name": "l4_hash",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 18,
+                        "bit_width": 1,
+                        "name": "sw_hash",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 19,
+                        "bit_width": 1,
+                        "name": "wifi_acked_valid",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 20,
+                        "bit_width": 1,
+                        "name": "wifi_acked",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 21,
+                        "bit_width": 1,
+                        "name": "no_fcs",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 22,
+                        "bit_width": 1,
+                        "name": "encapsulation",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 23,
+                        "bit_width": 1,
+                        "name": "encap_hdr_csum",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 24,
+                        "bit_width": 1,
+                        "name": "csum_valid",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 25,
+                        "bit_width": 2,
+                        "name": "ndisc_nodetype",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 27,
+                        "bit_width": 1,
+                        "name": "ipvs_property",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 28,
+                        "bit_width": 1,
+                        "name": "nf_trace",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 29,
+                        "bit_width": 1,
+                        "name": "offload_fwd_mark",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 30,
+                        "bit_width": 1,
+                        "name": "offload_l3_fwd_mark",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 31,
+                        "bit_width": 1,
+                        "name": "redirected",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 32,
+                        "bit_width": 1,
+                        "name": "nf_skip_egress",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 33,
+                        "bit_width": 1,
+                        "name": "slow_gro",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 34,
+                        "bit_width": 1,
+                        "name": "unreadable",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 35,
+                        "bit_width": 2,
+                        "name": "tc_depth",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 8,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 1
+                        }
+                      },
+                      {
+                        "bit_offset": 48,
+                        "bit_width": 0,
+                        "name": "tc_index",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 64,
+                        "bit_width": 0,
+                        "name": "alloc_cpu",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 96,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "csum",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "",
+                              "type": {
+                                "anonymous": true,
+                                "kind": "struct",
+                                "members": [
+                                  {
+                                    "bit_offset": 0,
+                                    "bit_width": 0,
+                                    "name": "csum_start",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  },
+                                  {
+                                    "bit_offset": 16,
+                                    "bit_width": 0,
+                                    "name": "csum_offset",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  }
+                                ],
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 128,
+                        "bit_width": 0,
+                        "name": "priority",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 160,
+                        "bit_width": 0,
+                        "name": "skb_iif",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 1,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 192,
+                        "bit_width": 0,
+                        "name": "hash",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 224,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "vlan_all",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "",
+                              "type": {
+                                "anonymous": true,
+                                "kind": "struct",
+                                "members": [
+                                  {
+                                    "bit_offset": 0,
+                                    "bit_width": 0,
+                                    "name": "vlan_proto",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  },
+                                  {
+                                    "bit_offset": 16,
+                                    "bit_width": 0,
+                                    "name": "vlan_tci",
+                                    "type": {
+                                      "bit_offset": 0,
+                                      "bit_width": 16,
+                                      "encoding": 0,
+                                      "kind": "int",
+                                      "size": 2
+                                    }
+                                  }
+                                ],
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 256,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "napi_id",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "sender_cpu",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 288,
+                        "bit_width": 0,
+                        "name": "secmark",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 32,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 320,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "mark",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "reserved_tailroom",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 32,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 4
+                              }
+                            }
+                          ],
+                          "size": 4
+                        }
+                      },
+                      {
+                        "bit_offset": 352,
+                        "bit_width": 0,
+                        "name": "",
+                        "type": {
+                          "anonymous": true,
+                          "kind": "union",
+                          "members": [
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "inner_protocol",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 16,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 2
+                              }
+                            },
+                            {
+                              "bit_offset": 0,
+                              "bit_width": 0,
+                              "name": "inner_ipproto",
+                              "type": {
+                                "bit_offset": 0,
+                                "bit_width": 8,
+                                "encoding": 0,
+                                "kind": "int",
+                                "size": 1
+                              }
+                            }
+                          ],
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 368,
+                        "bit_width": 0,
+                        "name": "inner_transport_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 384,
+                        "bit_width": 0,
+                        "name": "inner_network_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 400,
+                        "bit_width": 0,
+                        "name": "inner_mac_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 416,
+                        "bit_width": 0,
+                        "name": "protocol",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 432,
+                        "bit_width": 0,
+                        "name": "transport_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 448,
+                        "bit_width": 0,
+                        "name": "network_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 464,
+                        "bit_width": 0,
+                        "name": "mac_header",
+                        "type": {
+                          "bit_offset": 0,
+                          "bit_width": 16,
+                          "encoding": 0,
+                          "kind": "int",
+                          "size": 2
+                        }
+                      },
+                      {
+                        "bit_offset": 480,
+                        "bit_width": 0,
+                        "name": "kcov_handle",
+                        "type": {
+                          "kind": "ref",
+                          "ref_kind": "struct",
+                          "ref_name": "kcov_common_handle_id"
+                        }
+                      }
+                    ],
+                    "size": 60
+                  }
+                }
+              ],
+              "size": 60
+            }
+          },
+          {
+            "bit_offset": 1504,
+            "bit_width": 0,
+            "name": "tail",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 1536,
+            "bit_width": 0,
+            "name": "end",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 1600,
+            "bit_width": 0,
+            "name": "head",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 1664,
+            "bit_width": 0,
+            "name": "data",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 1728,
+            "bit_width": 0,
+            "name": "truesize",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 1760,
+            "bit_width": 0,
+            "name": "users",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "refcount_struct"
+            }
+          },
+          {
+            "bit_offset": 1792,
+            "bit_width": 0,
+            "name": "extensions",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "skb_ext"
+              }
+            }
+          }
+        ],
+        "name": "sk_buff",
+        "size": 232
+      }
+    },
+    {
+      "kind": 4,
+      "name": "xt_action_param",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "match",
+                  "type": {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "xt_match"
+                    }
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "target",
+                  "type": {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "xt_target"
+                    }
+                  }
+                }
+              ],
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "",
+            "type": {
+              "anonymous": true,
+              "kind": "union",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "matchinfo",
+                  "type": {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "void"
+                    }
+                  }
+                },
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "targinfo",
+                  "type": {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "void"
+                    }
+                  }
+                }
+              ],
+              "size": 8
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "state",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "nf_hook_state"
+              }
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "thoff",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 224,
+            "bit_width": 0,
+            "name": "fragoff",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 240,
+            "bit_width": 0,
+            "name": "hotdrop",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 4,
+              "kind": "int",
+              "size": 1
+            }
+          }
+        ],
+        "name": "xt_action_param",
+        "size": 32
+      }
+    },
+    {
+      "kind": 4,
+      "name": "xt_target",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "list",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "list_head"
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "name",
+            "type": {
+              "element": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              },
+              "kind": "array",
+              "nelems": 29
+            }
+          },
+          {
+            "bit_offset": 360,
+            "bit_width": 0,
+            "name": "revision",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 384,
+            "bit_width": 0,
+            "name": "target",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "args": [
+                  {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "sk_buff"
+                    }
+                  },
+                  {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "xt_action_param"
+                    }
+                  }
+                ],
+                "kind": "proto",
+                "ret": {
+                  "bit_offset": 0,
+                  "bit_width": 32,
+                  "encoding": 0,
+                  "kind": "int",
+                  "size": 4
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 448,
+            "bit_width": 0,
+            "name": "checkentry",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "args": [
+                  {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "xt_tgchk_param"
+                    }
+                  }
+                ],
+                "kind": "proto",
+                "ret": {
+                  "bit_offset": 0,
+                  "bit_width": 32,
+                  "encoding": 1,
+                  "kind": "int",
+                  "size": 4
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 512,
+            "bit_width": 0,
+            "name": "check_hooks",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "args": [
+                  {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "xt_tgchk_param"
+                    }
+                  }
+                ],
+                "kind": "proto",
+                "ret": {
+                  "bit_offset": 0,
+                  "bit_width": 32,
+                  "encoding": 1,
+                  "kind": "int",
+                  "size": 4
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 576,
+            "bit_width": 0,
+            "name": "destroy",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "args": [
+                  {
+                    "kind": "ptr",
+                    "pointee": {
+                      "kind": "ref",
+                      "ref_kind": "struct",
+                      "ref_name": "xt_tgdtor_param"
+                    }
+                  }
+                ],
+                "kind": "proto",
+                "ret": {
+                  "kind": "void"
+                }
+              }
+            }
+          },
+          {
+            "bit_offset": 640,
+            "bit_width": 0,
+            "name": "me",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "module"
+              }
+            }
+          },
+          {
+            "bit_offset": 704,
+            "bit_width": 0,
+            "name": "table",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 768,
+            "bit_width": 0,
+            "name": "targetsize",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 800,
+            "bit_width": 0,
+            "name": "usersize",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 832,
+            "bit_width": 0,
+            "name": "hooks",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 864,
+            "bit_width": 0,
+            "name": "proto",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 880,
+            "bit_width": 0,
+            "name": "family",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          }
+        ],
+        "name": "xt_target",
+        "size": 112
+      }
+    },
+    {
+      "kind": 4,
+      "name": "xt_tgchk_param",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "net",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "net"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "table",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "bit_offset": 0,
+                "bit_width": 8,
+                "encoding": 0,
+                "kind": "int",
+                "size": 1
+              }
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "entryinfo",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "target",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "xt_target"
+              }
+            }
+          },
+          {
+            "bit_offset": 256,
+            "bit_width": 0,
+            "name": "targinfo",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 320,
+            "bit_width": 0,
+            "name": "hook_mask",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 352,
+            "bit_width": 0,
+            "name": "family",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          },
+          {
+            "bit_offset": 360,
+            "bit_width": 0,
+            "name": "nft_compat",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 4,
+              "kind": "int",
+              "size": 1
+            }
+          }
+        ],
+        "name": "xt_tgchk_param",
+        "size": 48
+      }
+    },
+    {
+      "kind": 4,
+      "name": "xt_tgdtor_param",
+      "signature": {
+        "kind": "struct",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "net",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "net"
+              }
+            }
+          },
+          {
+            "bit_offset": 64,
+            "bit_width": 0,
+            "name": "target",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "ref",
+                "ref_kind": "struct",
+                "ref_name": "xt_target"
+              }
+            }
+          },
+          {
+            "bit_offset": 128,
+            "bit_width": 0,
+            "name": "targinfo",
+            "type": {
+              "kind": "ptr",
+              "pointee": {
+                "kind": "void"
+              }
+            }
+          },
+          {
+            "bit_offset": 192,
+            "bit_width": 0,
+            "name": "family",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 8,
+              "encoding": 0,
+              "kind": "int",
+              "size": 1
+            }
+          }
+        ],
+        "name": "xt_tgdtor_param",
+        "size": 32
+      }
+    },
+    {
+      "kind": 5,
+      "name": "nf_conntrack_man_proto",
+      "signature": {
+        "kind": "union",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "all",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 16,
+              "encoding": 0,
+              "kind": "int",
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "tcp",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "port",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 16,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 2
+                  }
+                }
+              ],
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "udp",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "port",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 16,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 2
+                  }
+                }
+              ],
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "icmp",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "id",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 16,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 2
+                  }
+                }
+              ],
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "dccp",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "port",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 16,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 2
+                  }
+                }
+              ],
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "sctp",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "port",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 16,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 2
+                  }
+                }
+              ],
+              "size": 2
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "gre",
+            "type": {
+              "anonymous": true,
+              "kind": "struct",
+              "members": [
+                {
+                  "bit_offset": 0,
+                  "bit_width": 0,
+                  "name": "key",
+                  "type": {
+                    "bit_offset": 0,
+                    "bit_width": 16,
+                    "encoding": 0,
+                    "kind": "int",
+                    "size": 2
+                  }
+                }
+              ],
+              "size": 2
+            }
+          }
+        ],
+        "name": "nf_conntrack_man_proto",
+        "size": 2
+      }
+    },
+    {
+      "kind": 5,
+      "name": "nf_inet_addr",
+      "signature": {
+        "kind": "union",
+        "members": [
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "all",
+            "type": {
+              "element": {
+                "bit_offset": 0,
+                "bit_width": 32,
+                "encoding": 0,
+                "kind": "int",
+                "size": 4
+              },
+              "kind": "array",
+              "nelems": 4
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "ip",
+            "type": {
+              "bit_offset": 0,
+              "bit_width": 32,
+              "encoding": 0,
+              "kind": "int",
+              "size": 4
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "ip6",
+            "type": {
+              "element": {
+                "bit_offset": 0,
+                "bit_width": 32,
+                "encoding": 0,
+                "kind": "int",
+                "size": 4
+              },
+              "kind": "array",
+              "nelems": 4
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "in",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "in_addr"
+            }
+          },
+          {
+            "bit_offset": 0,
+            "bit_width": 0,
+            "name": "in6",
+            "type": {
+              "kind": "ref",
+              "ref_kind": "struct",
+              "ref_name": "in6_addr"
+            }
+          }
+        ],
+        "name": "nf_inet_addr",
+        "size": 16
+      }
+    },
+    {
+      "kind": 6,
+      "name": "ip_conntrack_info",
+      "signature": {
+        "kind": "enum",
+        "members": [
+          {
+            "name": "IP_CT_ESTABLISHED",
+            "value": 0
+          },
+          {
+            "name": "IP_CT_RELATED",
+            "value": 1
+          },
+          {
+            "name": "IP_CT_NEW",
+            "value": 2
+          },
+          {
+            "name": "IP_CT_IS_REPLY",
+            "value": 3
+          },
+          {
+            "name": "IP_CT_ESTABLISHED_REPLY",
+            "value": 3
+          },
+          {
+            "name": "IP_CT_RELATED_REPLY",
+            "value": 4
+          },
+          {
+            "name": "IP_CT_NUMBER",
+            "value": 5
+          },
+          {
+            "name": "IP_CT_UNTRACKED",
+            "value": 7
+          }
+        ],
+        "name": "ip_conntrack_info",
+        "signed": false,
+        "size": 4
+      }
+    },
+    {
+      "kind": 6,
+      "name": "module_state",
+      "signature": {
+        "kind": "enum",
+        "members": [
+          {
+            "name": "MODULE_STATE_LIVE",
+            "value": 0
+          },
+          {
+            "name": "MODULE_STATE_COMING",
+            "value": 1
+          },
+          {
+            "name": "MODULE_STATE_GOING",
+            "value": 2
+          },
+          {
+            "name": "MODULE_STATE_UNFORMED",
+            "value": 3
+          }
+        ],
+        "name": "module_state",
+        "signed": false,
+        "size": 4
+      }
+    }
+  ],
+  "required_names": [
+    "sk_buff",
+    "xt_action_param"
+  ],
+  "schema": 1
+}

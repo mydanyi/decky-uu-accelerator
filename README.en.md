@@ -36,7 +36,7 @@ The handheld runs the acceleration service. Sign in, choose a game or the Steam 
 ## Requirements
 
 - An **ARM64 device** running ArmadaOS or ArmadaOS Freedom, with working Decky Loader and FEX installations.
-- The network capabilities required by the core. The plugin checks these at startup and reports missing capabilities.
+- The plugin checks networking at startup and supplies bundled cgroup and DNS forwarding components when they are missing, loading them after compatibility checks pass.
 - The **UU主机加速器** mobile app, with the phone and handheld on the same local network when pairing.
 
 Only the **Steam Deck core through FEX** is supported. FEX is supplied by the operating system and is not installed by this plugin. Available games, nodes, and account entitlements are determined by the UU mobile app.
@@ -89,7 +89,9 @@ No. Use **隐藏绑定选项** to hide it; the plugin remembers your choice. Hid
 
 ### What about different devices and kernels?
 
-The plugin checks actual network capabilities rather than an allowlist of device models or kernel build dates. It prefers the system's existing modules. If a module is missing, a bundled compatibility module is used only when its interface matches the running kernel. If required capabilities are still unavailable, the plugin reports the problem so it can be addressed by the operating system.
+The plugin targets ArmadaOS system interfaces without a device-model allowlist. It prefers existing network capabilities and automatically loads bundled `xt_cgroup` and `xt_nat` components when needed. Starting the service after a reboot repeats this process; no manual module installation is required.
+
+Version 0.3 adds checks against the running kernel's actual interfaces. A different overall kernel configuration no longer prevents loading if the required interfaces remain compatible. The bundled components currently target ArmadaOS ARM64 Linux 7.2.6; future system updates that change those interfaces require updated plugin components. Startup errors retain the specific rule-probe, module-loading, and compatibility-check failures for diagnosis.
 
 ### How do I report an installation or startup problem?
 

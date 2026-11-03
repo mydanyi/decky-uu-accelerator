@@ -108,6 +108,18 @@ def _child_env(config):
     return env
 
 
+class NoExactKernelProfile(RuntimeError):
+    """No exact kernel identity profile matches the running kernel.
+
+    Raised only when the three-field identity tuple (release, machine,
+    normalized config digest) matches no accepted entry, or when
+    ``proc/config.gz`` cannot be read -- i.e. the exact identity simply cannot
+    be proven here. A malformed manifest, a missing file or a digest mismatch
+    are tamper conditions and are never reported through this subclass, so a
+    manifest problem can never fall through to the portable profile.
+    """
+
+
 # -- kernel cgroup compatibility preflight --------------------------------
 #
 # The FEX/x86 route needs ``xt_cgroup`` loaded before the core starts. We try
@@ -142,6 +154,48 @@ def _rc(result):
     return getattr(result, "returncode", 1)
 
 
+def _stderr_text(result):
+    return getattr(result, "stderr", "") or ""
+
+
+def _invoke_checked(runner, argv, action, diagnostics):
+    """Run one command, returning the result only when it succeeded.
+
+    Every failure -- a non-zero rc, a timeout or an exec error -- is appended
+    to ``diagnostics`` with the exact action, rc and stderr/exception so the
+    caller's final error keeps the real reason instead of a bare bool.
+    """
+    try:
+        result = _invoke(runner, argv, action)
+    except RuntimeError as exc:
+        diagnostics.append("{} 失败: {}".format(action, exc))
+        return None
+    if _rc(result) != 0:
+        diagnostics.append(
+            "{} 失败: rc={}, stderr={!r}".format(action, _rc(result), _stderr_text(result))
+        )
+        return None
+    return result
+
+
+def _diagnostic_text(entries, fallback):
+    text = "; ".join(item for item in entries if item)
+    return text or fallback
+
+
+def _bundled_load_error(module_name, probe_text, system_text, bundled_text):
+    """One terminal error that keeps every earlier failure visible."""
+    capability = "cgroup" if module_name == "xt_cgroup" else "DNS DNAT"
+    return RuntimeError(
+        (
+            "{}能力 (系统模块 {}) 加载失败:\n"
+            "  iptables 探测: {}\n"
+            "  系统 modprobe: {}\n"
+            "  自带模块: {}"
+        ).format(capability, module_name, probe_text, system_text, bundled_text)
+    )
+
+
 # One real iptables rule per feature, run in a throwaway unhooked chain.
 _IPTABLES_PROBES = {
     "xt_cgroup": (
@@ -155,7 +209,7 @@ _IPTABLES_PROBES = {
 }
 
 
-def _probe_network_feature(module_name, runner=None):
+def _probe_network_feature(module_name, runner=None, diagnostics=None):
     """Probe actual native iptables support for a feature module.
 
     A uniquely named, unhooked chain is created, the feature rule is appended
@@ -165,9 +219,18 @@ def _probe_network_feature(module_name, runner=None):
     was accepted *and* the owned chain was cleaned up. Any failure (including
     unsupported backends, timeouts and cleanup errors) returns ``False`` so
     the existing modprobe/fallback path continues; there are no retries.
+
+    ``diagnostics`` is an optional list that receives the failed action, rc and
+    stderr/exception of every failed command, cleanup included. The boolean
+    result and the unhooked-chain-only semantics are unchanged, and a failed
+    probe is evidence about *this* run only, never proof the kernel lacks the
+    feature.
     """
+    if diagnostics is None:
+        diagnostics = []
     spec = _IPTABLES_PROBES.get(module_name)
     if spec is None:
+        diagnostics.append("未知探测目标: {}".format(module_name))
         return False
     table, rule = spec
     runner = subprocess.run if runner is None else runner
@@ -177,27 +240,31 @@ def _probe_network_feature(module_name, runner=None):
     created = False
     cleanup_ok = True
     try:
-        result = _invoke(runner, [ipt, "-t", table, "-N", chain], "iptables -N")
-        if _rc(result) == 0:
+        result = _invoke_checked(
+            runner, [ipt, "-t", table, "-N", chain], "iptables -N", diagnostics
+        )
+        if result is not None:
             created = True
-            result = _invoke(runner, [ipt, "-t", table, "-A", chain] + rule, "iptables -A")
-            if _rc(result) == 0:
+            result = _invoke_checked(
+                runner, [ipt, "-t", table, "-A", chain] + rule, "iptables -A", diagnostics
+            )
+            if result is not None:
                 available = True
-    except RuntimeError:
-        available = False
     finally:
         if created:
-            try:
-                flush = _invoke(runner, [ipt, "-t", table, "-F", chain], "iptables -F")
-                if _rc(flush) != 0:
-                    cleanup_ok = False
-            except RuntimeError:
+            if (
+                _invoke_checked(
+                    runner, [ipt, "-t", table, "-F", chain], "iptables -F", diagnostics
+                )
+                is None
+            ):
                 cleanup_ok = False
-            try:
-                delete = _invoke(runner, [ipt, "-t", table, "-X", chain], "iptables -X")
-                if _rc(delete) != 0:
-                    cleanup_ok = False
-            except RuntimeError:
+            if (
+                _invoke_checked(
+                    runner, [ipt, "-t", table, "-X", chain], "iptables -X", diagnostics
+                )
+                is None
+            ):
                 cleanup_ok = False
     return available and cleanup_ok
 
@@ -346,11 +413,17 @@ def _validate_kernel_compat(compat, root, module_name="xt_cgroup", digest_key="m
     entries = _compat_entries(manifest)
 
     uname = os.uname()
+    try:
+        config_sha256 = _normalized_config_sha256(Path(root) / "proc" / "config.gz")
+    except RuntimeError as exc:
+        # An unreadable config.gz means the exact identity cannot be proven at
+        # all, which is a no-match -- never a tamper verdict on the manifest.
+        raise NoExactKernelProfile(str(exc))
     actual = {
         "kernel_release": uname.release,
         "kernel_version": uname.version,
         "machine": uname.machine,
-        "config_sha256": _normalized_config_sha256(Path(root) / "proc" / "config.gz"),
+        "config_sha256": config_sha256,
     }
     matched = None
     for entry in entries:
@@ -364,7 +437,7 @@ def _validate_kernel_compat(compat, root, module_name="xt_cgroup", digest_key="m
         else:
             capability = "cgroup 网络规则能力"
             hint = "xt_cgroup"
-        raise RuntimeError(
+        raise NoExactKernelProfile(
             (
                 "缺少{}: release={}，架构={}，配置={}；"
                 "iptables 原生规则不支持且系统未加载 {} 模块，"
@@ -401,16 +474,263 @@ def _validate_kernel_compat(compat, root, module_name="xt_cgroup", digest_key="m
     return str(module_path)
 
 
-def _ensure_module(config, root, module_name, digest_key, dependency_args, runner=None):
+# -- portable (BTF-verified) bundled module profile -----------------------
+#
+# A portable profile covers kernels we have no exact build for. Its module is
+# trusted only after the bytes and their ABI manifest are proven against the
+# recorded digests, the running release/arch, the compile-time config branches
+# the real source uses, and the host's own BTF -- the last step is what makes
+# one .ko valid across otherwise unrelated builds of the same kernel.
+
+_PORTABLE_DIR = "portable"
+_BTF_SUBDIR = ("sys", "kernel", "btf")
+_KERNEL_ABI_NAME = "kernel_abi.py"
+# KNOWN dependency BTF files that carry types the portable module needs; a
+# built-in dependency simply has no file of its own and its types arrive via
+# vmlinux, so a genuinely missing type fails the ABI check below.
+_PORTABLE_BTF_DEPENDENCIES = {
+    "xt_cgroup": ("x_tables",),
+    "xt_nat": ("x_tables", "nf_conntrack", "nf_nat"),
+}
+# Compile-time branches the real xt_cgroup source selects on. A missing or
+# "not set" symbol reads as "n", exactly like the kernel's own .config.
+_PORTABLE_XT_CGROUP_CONFIG = (
+    ("CONFIG_CGROUPS", "y"),
+    ("CONFIG_SOCK_CGROUP_DATA", "y"),
+    ("CONFIG_CGROUP_NET_CLASSID", "n"),
+)
+
+
+def _is_hex64(value):
+    return (
+        isinstance(value, str)
+        and len(value) == 64
+        and all(ch in "0123456789abcdefABCDEF" for ch in value)
+    )
+
+
+def _kernel_config_values(config_gz):
+    """Map ``CONFIG_*`` symbols to their literal value; unset reads as ``n``."""
+    try:
+        with open(config_gz, "rb") as handle:
+            raw = gzip.decompress(handle.read())
+    except (OSError, EOFError) as exc:
+        raise RuntimeError("无法读取或解压内核配置 {}: {}".format(config_gz, exc))
+    values = {}
+    suffix = " is not set"
+    for line in raw.decode("utf-8", errors="replace").split("\n"):
+        line = line.strip()
+        if line.startswith("# CONFIG_") and line.endswith(suffix):
+            values[line[2 : -len(suffix)]] = "n"
+        elif line.startswith("CONFIG_") and "=" in line:
+            key, _, value = line.partition("=")
+            values[key] = value.strip()
+    return values
+
+
+def _load_kernel_abi():
+    """Import the standalone ABI helper that ships beside this supervisor."""
+    here = str(Path(__file__).resolve().parent)
+    if here not in sys.path:
+        sys.path.insert(0, here)
+    try:
+        from kernel_abi import AbiError, validate_abi
+    except ImportError as exc:
+        raise RuntimeError(
+            "缺少内核 ABI 校验辅助模块 {!r}: {}".format(_KERNEL_ABI_NAME, exc)
+        )
+    return validate_abi, AbiError
+
+
+def _portable_entry(manifest, module_name):
+    """Return the validated portable entry for *module_name*, or ``None``."""
+    portable = manifest.get("portable_modules")
+    if portable is None:
+        return None
+    if not isinstance(portable, dict):
+        raise RuntimeError("内核兼容清单 portable_modules 必须是对象")
+    entry = portable.get(module_name)
+    if entry is None:
+        return None
+    if not isinstance(entry, dict):
+        raise RuntimeError("内核兼容清单 portable_modules.{} 不是对象".format(module_name))
+    for key in ("module_sha256", "abi_sha256"):
+        if not _is_hex64(entry.get(key)):
+            raise RuntimeError(
+                "内核兼容清单 portable_modules.{}.{} 缺失或不是 64 位十六进制".format(
+                    module_name, key
+                )
+            )
+        entry[key] = entry[key].lower()
+    return entry
+
+
+def _validate_portable_kernel_compat(
+    compat, root, module_name, dependency_args, runner, diagnostics
+):
+    """Prove the portable module fits this kernel, or raise.
+
+    Order matters and is deliberate: every local, offline proof (manifest
+    shape, file presence, module digest, ABI-manifest digest, release/arch, and
+    the compile-time branches xt_cgroup actually uses) happens *before* a
+    single dependency ``modprobe``. Only then are the dependencies loaded --
+    which is also what publishes ``/sys/kernel/btf/x_tables`` -- and the host
+    BTF read for :func:`kernel_abi.validate_abi`.
+
+    Returns the validated module path and never force-loads anything; a
+    ``None`` result means the manifest carries no portable profile for this
+    module, so the caller keeps the original exact-profile refusal.
+    """
+    if not isinstance(compat, str) or not compat:
+        raise RuntimeError("缺少 kernel_compat 配置，无法使用便携式模块")
+    compat_dir = Path(compat)
+    manifest_path = compat_dir / "manifest.json"
+    if not manifest_path.is_file():
+        raise RuntimeError("内核兼容清单缺失: {}".format(manifest_path))
+    try:
+        manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise RuntimeError("内核兼容清单无法解析: {}".format(exc))
+    if not isinstance(manifest, dict):
+        raise RuntimeError("内核兼容清单格式无效")
+
+    entry = _portable_entry(manifest, module_name)
+    if entry is None:
+        return None
+
+    portable_dir = compat_dir / _PORTABLE_DIR
+    module_path = portable_dir / (module_name + ".ko")
+    metadata_path = portable_dir / (module_name + ".abi.json")
+    for path in (module_path, metadata_path):
+        if not path.is_file():
+            raise RuntimeError("便携式模块文件缺失: {}".format(path))
+
+    module_digest = _sha256_file(module_path)
+    if module_digest != entry["module_sha256"]:
+        raise RuntimeError(
+            "便携式模块 {} 校验失败: 期望 {}，实际 {}".format(
+                module_name, entry["module_sha256"], module_digest
+            )
+        )
+    metadata_digest = _sha256_file(metadata_path)
+    if metadata_digest != entry["abi_sha256"]:
+        raise RuntimeError(
+            "便携式模块 {} 的 ABI 清单校验失败: 期望 {}，实际 {}".format(
+                module_name, entry["abi_sha256"], metadata_digest
+            )
+        )
+
+    try:
+        metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    except (OSError, ValueError) as exc:
+        raise RuntimeError(
+            "便携式模块 {} 的 ABI 清单无法解析: {}".format(module_name, exc)
+        )
+    if not isinstance(metadata, dict):
+        raise RuntimeError("便携式模块 {} 的 ABI 清单格式无效".format(module_name))
+
+    uname = os.uname()
+    if metadata.get("kernel_release") != uname.release:
+        raise RuntimeError(
+            "便携式模块 {} 的内核版本不匹配: 清单 {}，当前 {}".format(
+                module_name, metadata.get("kernel_release"), uname.release
+            )
+        )
+    if metadata.get("machine") != uname.machine:
+        raise RuntimeError(
+            "便携式模块 {} 的架构不匹配: 清单 {}，当前 {}".format(
+                module_name, metadata.get("machine"), uname.machine
+            )
+        )
+    if metadata.get("module_sha256") != module_digest:
+        raise RuntimeError(
+            "便携式模块 {} 的 ABI 清单记录的模块摘要与实际文件不符".format(module_name)
+        )
+
+    if module_name == "xt_cgroup":
+        values = _kernel_config_values(Path(root) / "proc" / "config.gz")
+        for symbol, expected in _PORTABLE_XT_CGROUP_CONFIG:
+            actual_value = values.get(symbol, "n")
+            if actual_value != expected:
+                raise RuntimeError(
+                    "便携式 xt_cgroup 不适用: {} 期望 {}，当前 {}".format(
+                        symbol, expected, actual_value
+                    )
+                )
+
+    # Dependencies last among the pre-flight steps: they are what makes the
+    # dependency BTF files appear, and nothing above needed them.
+    dependency = _invoke(
+        runner,
+        [_system_tool("modprobe")] + list(dependency_args),
+        "modprobe {}".format(" ".join(dependency_args)),
+    )
+    if _rc(dependency) != 0:
+        diagnostics.append(
+            "modprobe {} 失败: rc={}, stderr={!r}".format(
+                " ".join(dependency_args), _rc(dependency), _stderr_text(dependency)
+            )
+        )
+        raise RuntimeError(
+            "加载 {} 依赖模块失败: {} (rc={}, stderr={!r})".format(
+                module_name,
+                " ".join(dependency_args),
+                _rc(dependency),
+                _stderr_text(dependency),
+            )
+        )
+
+    btf_dir = Path(root).joinpath(*_BTF_SUBDIR)
+    base_path = btf_dir / "vmlinux"
+    if not base_path.is_file():
+        raise RuntimeError("宿主机内核 BTF 缺失: {}".format(base_path))
+    try:
+        base_btf = base_path.read_bytes()
+    except OSError as exc:
+        raise RuntimeError("无法读取宿主机内核 BTF {}: {}".format(base_path, exc))
+    kernel_btf = [base_btf]
+    for dependency_name in _PORTABLE_BTF_DEPENDENCIES.get(module_name, ()):
+        split_path = btf_dir / dependency_name
+        if not split_path.is_file():
+            # Built-in dependency: its types live in vmlinux, and a genuinely
+            # missing type is reported by the ABI validation below.
+            continue
+        try:
+            kernel_btf.append(split_path.read_bytes())
+        except OSError as exc:
+            raise RuntimeError("无法读取依赖模块 BTF {}: {}".format(split_path, exc))
+    if len(kernel_btf) == 1:
+        kernel_btf = base_btf
+
+    validate_abi, abi_error = _load_kernel_abi()
+    try:
+        validate_abi(
+            metadata, kernel_btf, module_digest, uname.release, uname.machine
+        )
+    except abi_error as exc:
+        raise RuntimeError(
+            "便携式模块 {} 的 ABI 校验失败: {}".format(module_name, exc)
+        )
+
+    return str(module_path)
+
+
+def _ensure_module(
+    config, root, module_name, digest_key, dependency_args, runner=None, diagnostics=None
+):
     """Make ``module_name`` available, sharing the loader for xt_cgroup/xt_nat.
 
-    An already-present ``sys/module/<module_name>`` is enough; otherwise the
-    system ``modprobe`` is tried and, only when that fails, a locally bundled
-    module is validated against the running kernel and the recorded digest
-    before ``dependency_args`` and ``insmod`` are used. A concurrent load that
-    wins the race is accepted, and every error names the module actually being
-    loaded.
+    Route, in order: an already-present ``sys/module/<module_name>``; native
+    iptables that already implements the feature; the system ``modprobe``; the
+    exact-kernel bundled module; and, only when *no exact profile matches this
+    kernel*, the portable bundled module, which is proven against the host BTF
+    before ``insmod``. A concurrent load that wins the race is accepted.
+
+    Every terminal failure carries the probe, system-modprobe and bundled
+    reasons together, with rc and stderr where the OS provided them.
     """
+    if diagnostics is None:
+        diagnostics = []
     root = Path(root)
     module_dir = root / "sys" / "module" / module_name
     if module_dir.exists():
@@ -422,49 +742,127 @@ def _ensure_module(config, root, module_name, digest_key, dependency_args, runne
     # backend) even when the module is not loadable and no bundled candidate
     # matches this kernel; that capability is enough on its own and must
     # return before any modprobe, manifest, config or uname access.
-    try:
-        if _probe_network_feature(module_name, runner=runner):
-            return
-    except RuntimeError:
-        pass
-
-    probe = _invoke(
-        runner, [_system_tool("modprobe"), module_name], "modprobe {}".format(module_name)
-    )
-    if _rc(probe) == 0:
+    probe_start = len(diagnostics)
+    if _probe_network_feature(module_name, runner=runner, diagnostics=diagnostics):
         return
+    probe_text = _diagnostic_text(
+        diagnostics[probe_start:], "iptables 原生探测未通过"
+    )
+
+    modprobe_start = len(diagnostics)
+    try:
+        probe = _invoke(
+            runner,
+            [_system_tool("modprobe"), module_name],
+            "modprobe {}".format(module_name),
+        )
+        if _rc(probe) == 0:
+            return
+        diagnostics.append(
+            "modprobe {} 失败: rc={}, stderr={!r}".format(
+                module_name, _rc(probe), _stderr_text(probe)
+            )
+        )
+    except RuntimeError as exc:
+        diagnostics.append(str(exc))
+    system_text = _diagnostic_text(
+        diagnostics[modprobe_start:], "modprobe 未提供详细信息"
+    )
 
     compat = config.get("kernel_compat")
+    bundled_start = len(diagnostics)
+    module_path = None
+    via_portable = False
     try:
         module_path = _validate_kernel_compat(
             compat, root, module_name=module_name, digest_key=digest_key
         )
+    except NoExactKernelProfile as no_exact:
+        # The exact identity is the first bundled route and stays untouched;
+        # only this no-match verdict may continue to the portable profile.
+        diagnostics.append(str(no_exact))
+        try:
+            module_path = _validate_portable_kernel_compat(
+                compat, root, module_name, dependency_args, runner, diagnostics
+            )
+        except RuntimeError as exc:
+            diagnostics.append(str(exc))
+            raise _bundled_load_error(
+                module_name, probe_text, system_text, str(exc)
+            )
+        if module_path is None:
+            raise _bundled_load_error(
+                module_name,
+                probe_text,
+                system_text,
+                _diagnostic_text(diagnostics[bundled_start:], str(no_exact)),
+            )
+        via_portable = True
     except RuntimeError as exc:
-        capability = "cgroup" if module_name == "xt_cgroup" else "DNS DNAT"
-        raise RuntimeError(
-            "{}能力 (系统模块 {}) 加载失败: {}".format(capability, module_name, exc)
-        )
+        # Tampered bytes, a malformed manifest or an unreadable file: refuse,
+        # never reinterpret as a no-match.
+        diagnostics.append(str(exc))
+        raise _bundled_load_error(module_name, probe_text, system_text, str(exc))
 
-    dependency = _invoke(
-        runner,
-        [_system_tool("modprobe")] + list(dependency_args),
-        "modprobe {}".format(" ".join(dependency_args)),
-    )
-    if _rc(dependency) != 0:
-        raise RuntimeError(
-            "加载 {} 依赖模块失败: {}".format(module_name, " ".join(dependency_args))
-        )
+    if not via_portable:
+        # The portable route already loaded these dependencies exactly once, so
+        # loading them again here would double-modprobe.
+        try:
+            dependency = _invoke(
+                runner,
+                [_system_tool("modprobe")] + list(dependency_args),
+                "modprobe {}".format(" ".join(dependency_args)),
+            )
+        except RuntimeError as exc:
+            raise _bundled_load_error(
+                module_name, probe_text, system_text, str(exc)
+            ) from exc
+        if _rc(dependency) != 0:
+            raise _bundled_load_error(
+                module_name,
+                probe_text,
+                system_text,
+                "加载 {} 依赖模块失败: {} (rc={}, stderr={!r})".format(
+                    module_name,
+                    " ".join(dependency_args),
+                    _rc(dependency),
+                    _stderr_text(dependency),
+                ),
+            )
 
-    load = _invoke(runner, [_system_tool("insmod"), module_path], "insmod {}".format(module_name))
+    try:
+        load = _invoke(
+            runner, [_system_tool("insmod"), module_path], "insmod {}".format(module_name)
+        )
+    except RuntimeError as exc:
+        diagnostics.append(str(exc))
+        raise _bundled_load_error(
+            module_name,
+            probe_text,
+            system_text,
+            "加载本地 {} 模块失败: {}".format(module_name, exc),
+        ) from exc
     if _rc(load) == 0:
         return
     if module_dir.exists():
         # Another loader raced us and won; the module is available regardless.
         return
-    raise RuntimeError("加载本地 {} 模块失败".format(module_name))
+    diagnostics.append(
+        "insmod {} 失败: rc={}, stderr={!r}".format(
+            module_name, _rc(load), _stderr_text(load)
+        )
+    )
+    raise _bundled_load_error(
+        module_name,
+        probe_text,
+        system_text,
+        "加载本地 {} 模块失败: rc={}, stderr={!r}".format(
+            module_name, _rc(load), _stderr_text(load)
+        ),
+    )
 
 
-def ensure_cgroup_support(config, root="/", runner=None):
+def ensure_cgroup_support(config, root="/", runner=None, diagnostics=None):
     """Make ``xt_cgroup`` available before the FEX core is launched.
 
     Only ``engine == "fex"`` is accepted; anything else is a configuration
@@ -476,10 +874,18 @@ def ensure_cgroup_support(config, root="/", runner=None):
     """
     if config.get("engine") != "fex":
         raise RuntimeError("unsupported engine: {!r}".format(config.get("engine")))
-    _ensure_module(config, root, "xt_cgroup", "module_sha256", ["x_tables"], runner=runner)
+    _ensure_module(
+        config,
+        root,
+        "xt_cgroup",
+        "module_sha256",
+        ["x_tables"],
+        runner=runner,
+        diagnostics=diagnostics,
+    )
 
 
-def ensure_nat_support(config, root="/", runner=None):
+def ensure_nat_support(config, root="/", runner=None, diagnostics=None):
     """Make ``xt_nat`` available before the FEX core is launched.
 
     Only ``engine == "fex"`` is accepted; anything else is a configuration
@@ -499,6 +905,7 @@ def ensure_nat_support(config, root="/", runner=None):
         "nat_module_sha256",
         ["-a", "x_tables", "nf_nat"],
         runner=runner,
+        diagnostics=diagnostics,
     )
 
 
