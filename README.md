@@ -1,39 +1,127 @@
-# UU加速器（Decky 插件）
+<h1 align="center">UU加速器</h1>
 
-UU加速器是为 ArmadaOS 设计的第三方 Decky 插件，负责下载、校验网易 UU 官方安装包，以及管理独立的加速服务。
+<p align="center"><strong>简体中文</strong> · <a href="README.en.md">English</a></p>
 
-preview.8 仅保留“Steam Deck 核心（FEX 使用）”：在 ARM64 掌机上通过系统已有 FEX 运行官方 x86_64 核心。ARM 路由器核心和 x86 直接运行方式已移除。
+<p align="center"><strong>在 ArmadaOS 上安装、绑定和管理 UU 加速服务</strong></p>
 
-## 状态含义
+<p align="center">
+  面向 ARM64 掌机和平板的 Decky 插件。<br>
+  在游戏模式中安装官方核心，手机扫码绑定后即可选择游戏或 Steam 商店加速。
+</p>
 
-插件区分两类状态：“服务/核心进程状态”只表示本机服务是否在运行；“加速状态”基于本机真实网络证据（核心进程拥有的隧道接口、路由规则与 NAT 规则）判定，只有全部证据齐备才显示“加速中”，否则显示“待加速/未运行/状态未知”。后台操作（安装、更新等）单独显示，不与加速状态混淆。
+<p align="center">
+  <a href="https://github.com/mydanyi/decky-uu-accelerator/releases/latest"><img alt="最新版本" src="https://img.shields.io/github/v/release/mydanyi/decky-uu-accelerator?style=flat&amp;color=285580"></a>
+  <a href="https://armadaos.dev/"><img alt="适用于 ArmadaOS" src="https://img.shields.io/badge/ArmadaOS-ARM64-18181a?style=flat"></a>
+  <a href="#相关项目与许可"><img alt="插件代码采用 MIT 许可证" src="https://img.shields.io/badge/plugin_code-MIT-18181a?style=flat"></a>
+</p>
 
-插件自身版本号独立于网易官方核心版本，由本仓库维护。
+<p align="center">
+  <a href="https://github.com/mydanyi/decky-uu-accelerator/releases/latest"><strong>下载安装包</strong></a>
+  · <a href="#安装与首次使用">安装与首次使用</a>
+  · <a href="#常见问题">常见问题</a>
+  · <a href="https://github.com/mydanyi/decky-uu-accelerator/issues">反馈问题</a>
+</p>
 
-## 使用
+## 关于插件
 
-1. 确认系统已提供可用的 FEXInterpreter，再通过 Decky 开发者设置安装插件 ZIP。插件不负责安装 FEX。
-2. 点击“安装核心”或“安装 / 更新核心”。首次安装会启动核心；升级前若已停止，升级后保持停止，可再点击“启动服务”。
-3. 手机与掌机位于同一局域网，使用“UU主机加速器”App 扫描“手机绑定”二维码，再选择游戏和节点。
+UU加速器将核心安装、手机绑定和服务管理整合到 ArmadaOS 的 Decky 面板中。插件通过系统已有的 **FEX** 运行网易 UU 官方 **Steam Deck 核心**，并按系统实际网络能力处理运行所需的配置。
 
-二维码区域首次显示时默认展开，可通过“隐藏绑定选项”/“显示绑定选项”收起或展开，该选择会本地持久化；收起后放大、刷新与重置绑定入口一并隐藏，点击“显示绑定选项”即可恢复。二维码支持放大、刷新；刷新仅重新读取，不重置身份。普通卸载、换装 FEX 核心均保留绑定 UUID，只有重置绑定才更换身份。默认关闭开机启动。
+掌机负责运行加速服务；登录账号、选择游戏或 Steam 商店、选择节点和开始加速在手机 **UU主机加速器** App 中完成。
 
-旧版插件安装的其他核心不再支持启动、重置绑定或开启自启动，仍可停止、卸载、关闭自启动，并换装 FEX 核心。换装失败会恢复旧安装数据，保持旧核心停止并关闭自启动。检测到插件之外的旧官方安装时，会提示先处理冲突。
+- **核心管理**：下载并校验官方核心，检查更新、安装、启动、停止和卸载。
+- **手机绑定**：显示、放大和刷新二维码；绑定后可收起二维码与相关选项，并记住显示偏好。
+- **状态查看**：分别显示加速状态、服务状态、插件版本和核心版本；运行中与加速中使用绿色显示。
+- **开机启动**：按需开启，让加速服务随系统启动。
 
-## 兼容性
+## 使用要求
 
-- 复用系统已有 FEX，不修改全局 rootfs；使用插件自有数据目录。
-- 原生 Python 监督程序和独立 systemd 服务负责进程管理。服务运行状态不等于实际加速效果。
-- 官方包下载后核对 MD5，并检查可执行文件 ELF 架构；HTTPS 验证系统 CA。
-- 系统模块优先。运行前检查内核真实网络能力；系统已提供原生 nft/标准模块时直接使用，不查清单。确需随包兼容模块时（仅在系统 modprobe 无果后），模块接口（内核 release、machine、归一化配置 SHA）与逐模块 SHA-256 均须匹配清单；kernel_version 仅作来源记录，不作为资格条件；不按构建日期设置白名单；没有接口兼容的补充模块时，明确报告缺少的系统能力，不强制加载。
-- 随包 xt_cgroup、xt_nat 是支持 FEX 网络规则的 ARM64 Linux 内核模块，与已移除的 UU 路由器核心无关。插件按实际内核能力与模块接口自动选择模块，适用于具备所需网络能力的 ARM64 掌机，不绑定机型或 IP。保留原有历史内核模块组，oct26 与 oct29（#12 SMP PREEMPT Thu Oct 29 04:36:08 UTC 2026）模块保持不变；每组分别校验内核配置与模块摘要。随包模块仅在系统模块缺失相应能力时使用，缺少相应系统/模块支持的功能不会被凭空提供。
+- 运行 ArmadaOS 或 ArmadaOS Freedom 的 **ARM64 设备**，已配置可用的 Decky Loader 和 FEX。
+- 系统具备核心需要的网络功能；插件会在启动时检查并提示缺失项。
+- 手机安装 **UU主机加速器** App，绑定时与掌机连接同一局域网。
 
-## 构建
+当前仅支持 **Steam Deck 核心（FEX 使用）**。FEX 由系统提供，插件不负责安装 FEX。游戏、节点和账号权益以手机 UU App 提供的内容为准。
 
-使用 npm ci、npm run typecheck、npm run build 构建前端。运行 python3 tools/package_plugin.py --output output 打包，再用 python3 tools/verify_package.py <zip> 校验。tools/verify_official_payloads.py --output <dir> 只下载并静态检查 Steam Deck 官方包，不执行核心。
+## 安装与首次使用
 
-## 许可
+### 1. 安装插件
 
-本插件与网易 UU 无隶属关系。官方 UU 核心不包含在插件 ZIP 中，安装时从官方渠道下载，适用供应商许可；本项目没有对应核心源码，无法据此重新编译为 ARM64。
+1. 前往 [最新发布页](https://github.com/mydanyi/decky-uu-accelerator/releases/latest)，下载附件中的 `uu-accelerator-v*.zip` 插件安装包，保留 ZIP 格式。
+2. 在掌机打开 **Decky 设置**，启用开发者模式，进入开发者页面的 **从 ZIP 文件安装插件 / Install Plugin from ZIP File**，选择下载的安装包。
+3. 安装完成后，在 Decky 插件列表打开 **UU加速器**。
 
-原创管理和前端代码适用根目录 MIT LICENSE。compat 目录的 Linux 网络模块适用随附 GPL-2.0-only，附源码、Makefile、许可证与精确匹配清单。这些源码是插件和 Linux 模块的源码，不是 UU 核心源码；三组共六个兼容模块是插件包中仅有的 ELF。
+发布页的 **Source code** 是源码压缩包，不能作为插件安装包使用。
+
+### 2. 安装核心并绑定手机
+
+1. 在插件中点击 **安装核心**，等待下载、校验和安装完成。首次安装会自动启动服务。
+2. 等待 **手机绑定** 区域显示二维码；如果服务已停止，先点击 **启动服务**。
+3. 打开手机 **UU主机加速器** App，使用扫码绑定入口扫描二维码，按手机提示完成绑定。
+4. 在手机中选择需要加速的游戏或 **Steam 商店**，选择节点并开始加速。掌机插件会随网络状态更新显示 **加速中**。
+5. 绑定完成后，可点击 **隐藏绑定选项** 收起二维码、刷新和重置绑定入口。需要时点击 **显示绑定选项** 即可恢复。
+
+## 日常使用
+
+- **开始或停止加速**：在手机 UU App 中操作。掌机上的“启动服务”用于启动核心，具体加速目标仍在手机上选择。
+- **开机启动**：默认关闭，可在插件中开启。它控制核心服务随系统启动，重启后的具体加速状态请查看手机 App 和插件状态。
+- **更新核心**：点击“检查更新”，再按需点击“安装 / 更新核心”。更新前已停止的服务在更新后仍保持停止。
+- **更新插件**：从 Releases 下载新版插件 ZIP，通过 Decky 安装。插件更新与官方核心更新相互独立。
+- **卸载核心**：停止服务并移除本插件下载的核心，保留手机绑定身份；需要更换绑定身份时再使用“重置绑定”。
+
+## 状态说明
+
+| 界面显示 | 含义 |
+|---|---|
+| 加速中 | 已检测到核心持有的加速隧道及所需网络规则。 |
+| 待加速 | 服务和核心正在运行，尚未检测到完整的加速通道。 |
+| 未运行 | 服务或核心未运行，可先点击“启动服务”。 |
+| 状态未知 | 暂时无法读取足够的网络状态，无法确认是否正在加速。 |
+| 服务 / 核心进程：运行中 | 本机服务或核心进程已启动。 |
+| 后台操作：空闲 | 当前没有安装、更新等管理任务；正在加速时也可以显示“空闲”。 |
+| 插件版本 / 核心版本 | 分别是本插件的版本和网易官方核心的版本。 |
+
+“加速中”反映本机加速通道的状态，具体连接质量和延迟仍以手机 App 与实际游戏体验为准。
+
+## 常见问题
+
+### 绑定后还要一直显示二维码吗？
+
+不需要。点击 **隐藏绑定选项** 即可收起，插件会记住该选择。隐藏或刷新二维码不会重置绑定，也不会影响正在运行的服务；只有 **重置绑定** 才会生成新的设备身份，并需要重新扫码。
+
+### 不同设备和内核能否使用？
+
+插件按系统实际网络能力检查，不按机型或内核构建日期设置白名单。优先使用系统已有的网络模块；确有缺失时，只加载与当前内核接口匹配的随包兼容模块。系统仍缺少所需能力时，会给出错误提示，需由系统侧补齐。
+
+### 安装或启动失败时如何反馈？
+
+先记录插件与手机 App 的具体错误，再到 [Issues](https://github.com/mydanyi/decky-uu-accelerator/issues) 提交设备型号、系统与内核版本、插件与核心版本，以及失败的操作步骤。截图和日志请遮挡账号信息、绑定二维码及其他个人信息。
+
+## 开发
+
+前端位于 [`src/`](src/)，核心安装与服务管理位于 [`py_modules/uu_accelerator/`](py_modules/uu_accelerator/)，网络兼容模块的来源与构建说明见 [`compat/armada-7.2.6/`](compat/armada-7.2.6/README.md)。
+
+<details>
+<summary>构建与打包命令</summary>
+
+在具备 Node.js / npm 和 Python 3 的构建环境中执行：
+
+```sh
+npm ci
+npm run typecheck
+npm run build
+python3 tools/package_plugin.py --output output
+python3 tools/verify_package.py output/uu-accelerator-v*.zip
+```
+
+`tools/verify_official_payloads.py --output <dir>` 可下载并静态检查官方 Steam Deck 安装包，不运行官方核心。
+
+</details>
+
+## 相关项目与许可
+
+- [ArmadaOS](https://github.com/armada-os/armada) · [ArmadaOS Freedom](https://github.com/mydanyi/armadaos-freedom)：系统与设备适配。
+- [Decky Loader](https://github.com/SteamDeckHomebrew/decky-loader)：游戏模式中的插件框架。
+- [FEX](https://github.com/FEX-Emu/FEX)：在 ARM64 上运行官方 x86_64 核心。
+
+本项目是第三方插件，与网易 UU 无隶属关系。原创插件代码采用 [MIT 许可证](LICENSE)；随包 Linux 网络模块及其源码采用 [GPL-2.0-only](compat/armada-7.2.6/GPL-2.0.txt)。
+
+网易 UU 官方核心为闭源软件，在安装时从官方渠道下载，适用其自身许可和服务条款。仓库与插件安装包均不包含官方核心。
